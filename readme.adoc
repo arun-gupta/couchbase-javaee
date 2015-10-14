@@ -1,0 +1,4 @@
+= Couchbase and Java EE
+
+This workspace will show how to build a simple Java EE application using NoSQL. 
+

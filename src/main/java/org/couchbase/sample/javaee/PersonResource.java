@@ -1,8 +1,5 @@
 package org.couchbase.sample.javaee;
 
-/**
- * @author arungupta
- */
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.CouchbaseCluster;
 import com.couchbase.client.java.document.JsonDocument;
@@ -37,7 +34,7 @@ public class PersonResource {
         // Connect to the Cluster
         cluster = CouchbaseCluster.create("http://192.168.99.100:8091");
 
-        bucket = cluster.openBucket();
+        bucket = cluster.openBucket("default");
     }
 
     @PreDestroy
@@ -49,9 +46,8 @@ public class PersonResource {
     @GET
     @Path("{person}")
     public String getPerson(@PathParam("param") String name) {
-        // Read it back out
-        JsonDocument walter = bucket.get(name);
-        return walter.toString();
+        JsonDocument person = bucket.get(name);
+        return person.toString();
     }
 
     @POST

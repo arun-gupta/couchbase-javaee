@@ -25,7 +25,7 @@ import javax.ws.rs.PathParam;
  * @author Arun Gupta
  */
 @Path("persons")
-public class PersonSessionBean {
+public class PersonResource {
 
     CouchbaseCluster cluster;
     Bucket bucket;

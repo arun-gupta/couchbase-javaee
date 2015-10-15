@@ -21,6 +21,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import static com.couchbase.client.java.query.Select.select;
+import static com.couchbase.client.java.query.dsl.Expression.i;
 
 /**
  * @author Arun Gupta
@@ -48,7 +49,7 @@ public class AirlineResource {
 
     @GET
     public String getAll() {
-        N1qlQuery query = N1qlQuery.simple(select("*").from("travel-sample").limit(10));
+        N1qlQuery query = N1qlQuery.simple(select("*").from(i("travel-sample")).limit(10));
 //        N1qlQuery query = N1qlQuery.simple("SELECT * FROM travel-sample LIMIT 10");
         System.out.println(query.toString());
         N1qlQueryResult result = bucket.query(query);

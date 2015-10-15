@@ -11,7 +11,7 @@ import javax.ws.rs.core.Application;
 /**
  * @author Arun Gupta
  */
-@ApplicationPath("webresources")
+@ApplicationPath("resources")
 public class MyApplication extends Application {
 
 }

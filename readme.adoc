@@ -2,3 +2,10 @@
 
 This workspace will show how to build a simple Java EE application using NoSQL. 
 
+== How to run?
+
+. Run Couchbase as Docker container: `docker run -d -p 8091:8091 couchbase`. More details: http://blog.arungupta.me/getting-started-with-couchbase-using-docker/
+. Download and unzip WildFly 9: http://download.jboss.org/wildfly/9.0.1.Final/wildfly-9.0.1.Final.zip
+. Start WildFly: `./bin/standalone.sh`
+. Deploy the application: `mvn install -Pwildfly`
+

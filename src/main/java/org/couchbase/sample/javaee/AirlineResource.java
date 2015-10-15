@@ -3,10 +3,10 @@ package org.couchbase.sample.javaee;
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.CouchbaseCluster;
 import com.couchbase.client.java.document.JsonDocument;
+import com.couchbase.client.java.document.RawJsonDocument;
 import com.couchbase.client.java.document.json.JsonObject;
-import com.couchbase.client.java.query.Query;
-import com.couchbase.client.java.query.QueryResult;
-import com.couchbase.client.java.query.SimpleQuery;
+import com.couchbase.client.java.query.N1qlQuery;
+import com.couchbase.client.java.query.N1qlQueryResult;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashSet;
@@ -20,6 +20,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import static com.couchbase.client.java.query.Select.select;
 
 /**
  * @author Arun Gupta
@@ -30,13 +31,11 @@ public class AirlineResource {
     CouchbaseCluster cluster;
     Bucket bucket;
 
-    Set<String> set = new HashSet<>();
-
     @PostConstruct
     private void initDB() {
         System.out.println("initDB");
         // Connect to the Cluster
-        cluster = CouchbaseCluster.create("http://192.168.99.100:8091");
+        cluster = CouchbaseCluster.create("192.168.99.100");
 
         bucket = cluster.openBucket("travel-sample");
     }
@@ -49,10 +48,10 @@ public class AirlineResource {
 
     @GET
     public String getAll() {
-//        JsonDocument result = bucket.query(select("*").from("travel-sample").limit(10));
-        SimpleQuery query = Query.simple("SELECT * FROM travel-sample LIMIT 10");
+        N1qlQuery query = N1qlQuery.simple(select("*").from("travel-sample").limit(10));
+//        N1qlQuery query = N1qlQuery.simple("SELECT * FROM travel-sample LIMIT 10");
         System.out.println(query.toString());
-        QueryResult result = bucket.query(query);
+        N1qlQueryResult result = bucket.query(query);
         System.out.println(result.toString());
         return result.allRows().toString();
     }
@@ -60,8 +59,7 @@ public class AirlineResource {
     @GET
     @Path("{id}")
     public String getAirline(@PathParam("id") String id) {
-        JsonDocument airline = bucket.get(id);
-        return airline.toString();
+        return bucket.get(id, RawJsonDocument.class).content();
     }
 
 //    @POST
@@ -71,7 +69,6 @@ public class AirlineResource {
 //            JsonDocument.create(key, JsonObject.fromJson(reader.readObject().getString(key)));
 //        }
 //    }
-
     @DELETE
     public void deletePerson(String key) {
         bucket.remove(key);

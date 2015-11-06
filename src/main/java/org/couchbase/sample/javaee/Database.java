@@ -2,6 +2,9 @@ package org.couchbase.sample.javaee;
 
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.CouchbaseCluster;
+import com.couchbase.client.java.query.N1qlQuery;
+import com.couchbase.client.java.query.N1qlQueryResult;
+import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
@@ -14,6 +17,18 @@ public class Database {
     
     CouchbaseCluster cluster;
     Bucket bucket;
+    
+    @PostConstruct
+    public void init() {
+        if (!getBucket().exists("airline_sequence")) {
+            N1qlQuery query = N1qlQuery.simple("SELECT MAX(id) + 1 as counterInit FROM `travel-sample` where type=\"airline\"");
+            N1qlQueryResult result = bucket.query(query);
+            if (result.finalSuccess()) {
+                long counterInit = result.allRows().get(0).value().getLong("counterInit");
+                bucket.counter("airline_sequence", counterInit);
+            }
+        }
+    }
 
     public CouchbaseCluster getCluster() {
         if (null == cluster) {

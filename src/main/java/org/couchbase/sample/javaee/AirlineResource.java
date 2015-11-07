@@ -14,7 +14,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
-import javax.xml.bind.JAXBException;
 
 /**
  * @author Arun Gupta
@@ -29,11 +28,9 @@ public class AirlineResource {
         N1qlQuery query = N1qlQuery
                 .simple(select("*")
                 .from(i(database.getBucket().name()))
-//                .from(i(bucket.name()))
                 .limit(10));
 //        N1qlQuery query = N1qlQuery.simple("SELECT * FROM `travel-sample` LIMIT 10");
         System.out.println(query.statement().toString());
-//        N1qlQueryResult result = bucket.query(query);
         N1qlQueryResult result = database.getBucket().query(query);
         System.err.println(result.errors());
         System.out.println(result.toString());
@@ -49,11 +46,6 @@ public class AirlineResource {
 //                .where(x("id").eq(id)));
 //        N1qlQuery query = N1qlQuery.simple("SELECT * from `travel-sample` WHERE id = " + id);
         
-        // SELECT RAW(`travel-sample`) from `travel-sample` USE KEYS ["airline_10"];
-        // SELECT RAW(`travel-sample`) from `travel-sample` USE KEYS ["airline_137", "airline_10"];
-        
-        // SELECT META(`travel-sample`).id,* FROM `travel-sample` LIMIT 10;
-        
         N1qlQuery query = N1qlQuery.simple("SELECT * from `travel-sample` USE KEYS [\"airline_" + id + "\"]");
         System.out.println(query.statement().toString());        
         N1qlQueryResult result = database.getBucket().query(query);
@@ -61,24 +53,17 @@ public class AirlineResource {
             return result.allRows().get(0).toString();
         }
 
-//        RawJsonDocument d = database.getBucket().get("airline_" + id, RawJsonDocument.class);
-//        if (null != d) {
-//            return d.content();
-//        }
-        
-        
         return null;
     }
     
     @POST
     @Consumes("application/json")
-    public void addAirline(AirlineBean airline) throws JAXBException, JsonProcessingException {
-        // {"country":"France","iata":"A5","callsign":"AIRLINAIR","name":"Airlinair","icao":"RLA","type":"airline"}
+    public void addAirline(AirlineBean airline) throws JsonProcessingException {
         JsonLongDocument id = database.getBucket().counter("airline_sequence", 1);
 
         database.getBucket().insert(AirlineBean.toJson(airline, id.content().longValue()));
     }
-//    
+
     @PUT
     @Path("{id}")
     public void updateAirline(AirlineBean airline) throws JsonProcessingException {
@@ -86,7 +71,7 @@ public class AirlineResource {
     }
     
     @DELETE
-    @Path("${id}")
+    @Path("{id}")
     public void delete(@PathParam("id")String id) {
         database.getBucket().remove("airline_" + id);
     }

@@ -4,6 +4,7 @@ import com.couchbase.client.deps.com.fasterxml.jackson.core.JsonProcessingExcept
 import com.couchbase.client.deps.com.fasterxml.jackson.databind.ObjectMapper;
 import com.couchbase.client.java.document.JsonDocument;
 import com.couchbase.client.java.document.json.JsonObject;
+import java.io.IOException;
 
 /**
  * @author arungupta
@@ -74,10 +75,19 @@ public class AirlineBean {
         bean.setId(String.valueOf(counter));
         String json = mapper.writeValueAsString(bean);
         
-        JsonDocument document = JsonDocument.create("airline_" + bean.getId(), JsonObject.fromJson(json));
-        
-        return document;
+        return JsonDocument.create("airline_" + bean.getId(), JsonObject.fromJson(json));
     }
     
+    static JsonDocument toJson(AirlineBean bean) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(bean);
+        
+        return JsonDocument.create("airline_" + bean.getId(), JsonObject.fromJson(json));
+    }
+    
+    static AirlineBean fromJson(JsonDocument json) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(json.content().toString(), AirlineBean.class);
+    }
     
 }

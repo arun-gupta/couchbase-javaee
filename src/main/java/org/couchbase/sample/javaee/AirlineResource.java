@@ -1,10 +1,7 @@
 package org.couchbase.sample.javaee;
 
 import com.couchbase.client.deps.com.fasterxml.jackson.core.JsonProcessingException;
-import com.couchbase.client.deps.com.fasterxml.jackson.databind.ObjectMapper;
-import com.couchbase.client.java.document.JsonDocument;
 import com.couchbase.client.java.document.JsonLongDocument;
-import com.couchbase.client.java.document.json.JsonObject;
 import com.couchbase.client.java.query.N1qlQuery;
 import com.couchbase.client.java.query.N1qlQueryResult;
 import javax.ws.rs.GET;
@@ -14,11 +11,10 @@ import static com.couchbase.client.java.query.Select.select;
 import static com.couchbase.client.java.query.dsl.Expression.i;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 
 /**
  * @author Arun Gupta
@@ -83,28 +79,15 @@ public class AirlineResource {
         database.getBucket().insert(AirlineBean.toJson(airline, id.content().longValue()));
     }
 //    
-//    @PUT
-//    public void updateAirline(AirlineBean airline) {
-//        
-//        if (database.getBucket().exists(data)) {
-//            JsonStringDocument document = JsonStringDocument.create(data);
-//            database.getBucket().upsert(document);
-//        }
-//    }
-//    
-//    @DELETE
-//    @Path("${id}")
-//    public void delete(@PathParam("id")String id) {
-//        // Query for all airlines for name
-//        // Use LIKE?
-//        SimpleN1qlQuery query = N1qlQuery.simple("SELECT * from `travel-sample` WHERE id = " + name);
-//        N1qlQueryResult result = database.getBucket().query(query);
-//        for (N1qlQueryRow row : result.allRows()) {
-//            row
-//        }
-//        if (database.getBucket().exists(data)) {
-//            JsonStringDocument document = JsonStringDocument.create(data);
-//            database.getBucket().remove(document);
-//        }
-//    }
+    @PUT
+    @Path("{id}")
+    public void updateAirline(AirlineBean airline) throws JsonProcessingException {
+        database.getBucket().replace(AirlineBean.toJson(airline));
+    }
+    
+    @DELETE
+    @Path("${id}")
+    public void delete(@PathParam("id")String id) {
+        database.getBucket().remove("airline_" + id);
+    }
 }

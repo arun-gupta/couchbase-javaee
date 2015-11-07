@@ -1,5 +1,10 @@
 package org.couchbase.sample.javaee;
 
+import com.couchbase.client.deps.com.fasterxml.jackson.core.JsonProcessingException;
+import com.couchbase.client.deps.com.fasterxml.jackson.databind.ObjectMapper;
+import com.couchbase.client.java.document.JsonDocument;
+import com.couchbase.client.java.document.json.JsonObject;
+
 /**
  * @author arungupta
  */
@@ -64,7 +69,15 @@ public class AirlineBean {
         return type;
     }
     
-    
+    static JsonDocument toJson(AirlineBean bean, long counter) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        bean.setId(String.valueOf(counter));
+        String json = mapper.writeValueAsString(bean);
+        
+        JsonDocument document = JsonDocument.create("airline_" + bean.getId(), JsonObject.fromJson(json));
+        
+        return document;
+    }
     
     
 }

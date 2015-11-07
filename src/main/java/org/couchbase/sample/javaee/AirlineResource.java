@@ -15,6 +15,7 @@ import static com.couchbase.client.java.query.dsl.Expression.i;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -77,19 +78,14 @@ public class AirlineResource {
     @Consumes("application/json")
     public void addAirline(AirlineBean airline) throws JAXBException, JsonProcessingException {
         // {"country":"France","iata":"A5","callsign":"AIRLINAIR","name":"Airlinair","icao":"RLA","type":"airline"}
-
         JsonLongDocument id = database.getBucket().counter("airline_sequence", 1);
-        airline.setId(String.valueOf(id.content()));
-        
-        ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(airline);
 
-        JsonDocument document = JsonDocument.create("airline_" + id, JsonObject.fromJson(json));
-        database.getBucket().insert(document);
+        database.getBucket().insert(AirlineBean.toJson(airline, id.content().longValue()));
     }
 //    
 //    @PUT
-//    public void updateAirline(String data) {
+//    public void updateAirline(AirlineBean airline) {
+//        
 //        if (database.getBucket().exists(data)) {
 //            JsonStringDocument document = JsonStringDocument.create(data);
 //            database.getBucket().upsert(document);

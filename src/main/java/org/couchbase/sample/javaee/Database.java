@@ -2,6 +2,7 @@ package org.couchbase.sample.javaee;
 
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.CouchbaseCluster;
+import com.couchbase.client.java.document.JsonLongDocument;
 import com.couchbase.client.java.query.N1qlQuery;
 import com.couchbase.client.java.query.N1qlQueryResult;
 import javax.annotation.PostConstruct;
@@ -25,7 +26,7 @@ public class Database {
             N1qlQueryResult result = bucket.query(query);
             if (result.finalSuccess()) {
                 long counterInit = result.allRows().get(0).value().getLong("counterInit");
-                bucket.counter("airline_sequence", counterInit);
+                bucket.insert(JsonLongDocument.create("airline_sequence", counterInit));
             }
         }
     }

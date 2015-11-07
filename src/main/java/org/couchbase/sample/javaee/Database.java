@@ -6,6 +6,7 @@ import com.couchbase.client.java.document.JsonLongDocument;
 import com.couchbase.client.java.query.N1qlQuery;
 import com.couchbase.client.java.query.N1qlQueryResult;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
@@ -29,6 +30,12 @@ public class Database {
                 bucket.insert(JsonLongDocument.create("airline_sequence", counterInit));
             }
         }
+    }
+    
+    @PreDestroy
+    public void stop() {
+        bucket.close();
+        cluster.disconnect();
     }
 
     public CouchbaseCluster getCluster() {

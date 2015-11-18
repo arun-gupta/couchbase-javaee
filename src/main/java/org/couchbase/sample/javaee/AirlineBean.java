@@ -5,6 +5,8 @@ import com.couchbase.client.deps.com.fasterxml.jackson.databind.ObjectMapper;
 import com.couchbase.client.java.document.JsonDocument;
 import com.couchbase.client.java.document.json.JsonObject;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author arungupta
@@ -88,6 +90,16 @@ public class AirlineBean {
     static AirlineBean fromJson(JsonDocument json) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(json.content().toString(), AirlineBean.class);
+    }
+    
+    @Override
+    public String toString() {
+        try {
+            return toJson(this).content().toString();
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(AirlineBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
     
 }

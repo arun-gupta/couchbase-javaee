@@ -71,6 +71,7 @@ public class AirlineResource {
     @PUT
     @Path("{id}")
     public String updateAirline(AirlineBean airline) throws JsonProcessingException {
+        System.out.println("PUT: " + airline.toString());
         JsonDocument document = database.getBucket().replace(AirlineBean.toJson(airline));
         
         return document.content().toString();
@@ -78,7 +79,11 @@ public class AirlineResource {
     
     @DELETE
     @Path("{id}")
-    public void delete(@PathParam("id")String id) {
+    public String delete(@PathParam("id")String id) {
+        String airline = getAirline(id);
+        System.out.println("DELETE: " + airline);
         database.getBucket().remove("airline_" + id);
+        
+        return airline;
     }
 }

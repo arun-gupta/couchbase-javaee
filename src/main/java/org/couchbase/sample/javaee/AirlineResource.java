@@ -1,6 +1,7 @@
 package org.couchbase.sample.javaee;
 
 import com.couchbase.client.deps.com.fasterxml.jackson.core.JsonProcessingException;
+import com.couchbase.client.java.document.JsonDocument;
 import com.couchbase.client.java.document.JsonLongDocument;
 import com.couchbase.client.java.query.N1qlQuery;
 import com.couchbase.client.java.query.N1qlQueryResult;
@@ -19,10 +20,11 @@ import javax.ws.rs.PUT;
  * @author Arun Gupta
  */
 @Path("airline")
+@Couchbase
 public class AirlineResource {
 
     @Inject Database database;
-    
+        
     @GET
     public String getAll() {
         N1qlQuery query = N1qlQuery
@@ -58,16 +60,20 @@ public class AirlineResource {
     
     @POST
     @Consumes("application/json")
-    public void addAirline(AirlineBean airline) throws JsonProcessingException {
+    public String addAirline(AirlineBean airline) throws JsonProcessingException {
+        System.out.println("POST: " + airline.toString());
         JsonLongDocument id = database.getBucket().counter("airline_sequence", 1);
 
-        database.getBucket().insert(AirlineBean.toJson(airline, id.content().longValue()));
+        JsonDocument document = database.getBucket().insert(AirlineBean.toJson(airline, id.content().longValue()));
+        return document.content().toString();
     }
 
     @PUT
     @Path("{id}")
-    public void updateAirline(AirlineBean airline) throws JsonProcessingException {
-        database.getBucket().replace(AirlineBean.toJson(airline));
+    public String updateAirline(AirlineBean airline) throws JsonProcessingException {
+        JsonDocument document = database.getBucket().replace(AirlineBean.toJson(airline));
+        
+        return document.content().toString();
     }
     
     @DELETE

@@ -12,6 +12,8 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <docker.host>192.168.99.100</docker.host>
+        <couchbase.port>8091</couchbase.port>
     </properties>
 
     <dependencies>
@@ -124,6 +126,100 @@
                                 <goals>
                                     <goal>deploy</goal>
                                 </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>couchbase</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.4.0</version>
+                        <executions>
+                            <execution>
+                                <id>Configure memory</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>curl</executable>
+                                    <arguments>
+                                        <argument>-v</argument>
+                                        <argument>-X</argument>
+                                        <argument>POST</argument> 
+                                        <argument>http://${docker.host}:${couchbase.port}/pools/default</argument>
+                                        <argument>-d</argument>
+                                        <argument>memoryQuota=300</argument>
+                                        <argument>-d</argument>
+                                        <argument>indexMemoryQuota=300</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>Configure services</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>curl</executable>
+                                    <arguments>
+                                        <argument>-v</argument>
+                                        <argument>-X</argument>
+                                        <argument>POST</argument>
+                                        <argument>http://${docker.host}:${couchbase.port}/node/controller/setupServices</argument>
+                                        <argument>-d</argument>
+                                        <argument>services=kv%2Cn1ql%2Cindex</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>Setup credentials</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>curl</executable>
+                                    <arguments>
+                                        <argument>-v</argument>
+                                        <argument>-X</argument>
+                                        <argument>POST</argument> 
+                                        <argument>http://${docker.host}:${couchbase.port}/settings/web</argument>
+                                        <argument>-d</argument>
+                                        <argument>port=8091</argument>
+                                        <argument>-d</argument>
+                                        <argument>username=Administrator</argument>
+                                        <argument>-d</argument>
+                                        <argument>password=password</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>Install travel-sample bucket</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>curl</executable>
+                                    <arguments>
+                                        <argument>-v</argument>
+                                        <argument>-u</argument>
+                                        <argument>Administrator:password</argument>
+                                        <argument>-X</argument>
+                                        <argument>POST</argument> 
+                                        <argument>http://${docker.host}:${couchbase.port}/sampleBuckets/install</argument>
+                                        <argument>-d</argument>
+                                        <argument>["travel-sample"]</argument>
+                                    </arguments>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

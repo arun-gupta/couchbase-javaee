@@ -15,6 +15,9 @@ This workspace will show how to query a Couchbase bucket using simple Java EE ap
 +
 ```console
 docker-machine create -d virtualbox --virtualbox-disk-size "5000" couchbase-javaee
+```
++
+```
 Running pre-create checks...
 Creating machine...
 Waiting for machine to be running, this may take a few minutes...

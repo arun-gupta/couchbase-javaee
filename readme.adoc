@@ -36,9 +36,10 @@ To see how to connect Docker to this machine, run: docker-machine env couchbase-
 eval $(docker-machine env couchbase-javaee)
 ```
 +
-. Use https://github.com/arun-gupta/docker-images/blob/master/wildfly-couchbase-javaee7/docker-compose.yml[Docker Compose file] and start the application environment as:
+. Download the https://github.com/arun-gupta/docker-images/blob/master/wildfly-couchbase-javaee7/docker-compose.yml[Docker Compose file] and start the application environment as:
 +
 ```console
+wget https://raw.githubusercontent.com/arun-gupta/docker-images/master/wildfly-couchbase-javaee7/docker-compose.yml
 docker-compose --x-networking up -d
 ```
 +

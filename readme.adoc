@@ -4,6 +4,11 @@ This workspace will show how to query a Couchbase bucket using simple Java EE ap
 
 == How to run?
 
+=== Prerequisite
+* Docker: https://docs.docker.com/engine/installation/
+* Docker Machine: http://docs.docker.com/machine/install-machine/
+* Docker Compose: http://docs.docker.com/compose/install/
+
 === Start Application
 
 . Create a new Docker Machine:
@@ -28,7 +33,7 @@ To see how to connect Docker to this machine, run: docker-machine env couchbase-
 eval $(docker-machine env couchbase-javaee)
 ```
 +
-. Use Docker Compose (https://docs.docker.com/compose/install/) file from https://github.com/arun-gupta/docker-images/blob/master/wildfly-couchbase-javaee7/docker-compose.yml and start the application environment as:
+. Use Docker Compose file from https://github.com/arun-gupta/docker-images/blob/master/wildfly-couchbase-javaee7/docker-compose.yml and start the application environment as:
 +
 ```console
 docker-compose --x-networking up -d

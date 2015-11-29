@@ -20,7 +20,6 @@ import javax.ws.rs.PUT;
  * @author Arun Gupta
  */
 @Path("airline")
-@Couchbase
 public class AirlineResource {
 
     @Inject Database database;

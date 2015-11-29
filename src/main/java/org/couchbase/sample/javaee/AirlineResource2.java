@@ -15,7 +15,7 @@ import javax.inject.Inject;
  * @author Arun Gupta
  */
 @Path("airline")
-public class AirlineResource {
+public class AirlineResource2 {
 
     @Inject Database database;
     

@@ -100,8 +100,8 @@ Creating db
 ```console
 mvn install -Pcouchbase -Ddocker.host=$(docker-machine ip couchbase-javaee)
 ```
-+
-```
+
+```console
 [INFO] Scanning for projects...
 [INFO]                                                                         
 [INFO] ------------------------------------------------------------------------
@@ -259,7 +259,7 @@ mvn install -Pcouchbase -Ddocker.host=$(docker-machine ip couchbase-javaee)
 ```console
 mvn install -Pwildfly -Dwildfly.hostname=$(docker-machine ip couchbase-javaee) -Dwildfly.username=admin -Dwildfly.password=Admin#007
 ```
-+
+
 ```
 [INFO] Scanning for projects...
 [INFO]                                                                         
@@ -349,7 +349,7 @@ INFO: JBoss Remoting version 4.0.9.Final
 ```console
 curl -v http://$(docker-machine ip couchbase-javaee):8080/couchbase-javaee/resources/airline
 ```
-+
+
 ```
 * Hostname was NOT found in DNS cache
 *   Trying 192.168.99.106...
@@ -377,7 +377,7 @@ curl -v http://$(docker-machine ip couchbase-javaee):8080/couchbase-javaee/resou
 ```console
 curl -v http://$(docker-machine ip couchbase-javaee):8080/couchbase-javaee/resources/airline/137
 ```
-+
+
 ```
 * Hostname was NOT found in DNS cache
 *   Trying 192.168.99.106...
@@ -404,7 +404,7 @@ curl -v http://$(docker-machine ip couchbase-javaee):8080/couchbase-javaee/resou
 ```console
 curl -v -H "Content-Type: application/json" -X POST -d '{"country":"France","iata":"A5","callsign":"AIRLINAIR","name":"Airlinair","icao":"RLA","type":"airline"}' http://$(docker-machine ip couchbase-javaee):8080/couchbase-javaee/resources/airline
 ```
-+
+
 ```
 * Hostname was NOT found in DNS cache
 *   Trying 192.168.99.106...
@@ -435,7 +435,7 @@ curl -v -H "Content-Type: application/json" -X POST -d '{"country":"France","iat
 ```console
 curl -v -H "Content-Type: application/json" -X PUT -d '{"country":"France","iata":"A5","callsign":"AIRLINAIR","name":"Airlin Air","icao":"RLA","type":"airline","id": "19810"}' http://$(docker-machine ip couchbase-javaee):8080/couchbase-javaee/resources/airline/19810
 ```
-+
+
 ```
 * Hostname was NOT found in DNS cache
 *   Trying 192.168.99.106...
@@ -466,7 +466,7 @@ curl -v -H "Content-Type: application/json" -X PUT -d '{"country":"France","iata
 ```console
 curl -v -X DELETE http://$(docker-machine ip couchbase-javaee):8080/couchbase-javaee/resources/airline/19810
 ```
-+
+
 ```
 * Hostname was NOT found in DNS cache
 *   Trying 192.168.99.106...

@@ -4,12 +4,20 @@ This workspace will show how to query a Couchbase bucket using simple Java EE ap
 
 == How to run?
 
+=== Prerequisite
+* Docker: https://docs.docker.com/engine/installation/
+* Docker Machine: http://docs.docker.com/machine/install-machine/
+* Docker Compose: http://docs.docker.com/compose/install/
+
 === Start Application
 
 . Create a new Docker Machine:
 +
 ```console
 docker-machine create -d virtualbox --virtualbox-disk-size "5000" couchbase-javaee
+```
++
+```
 Running pre-create checks...
 Creating machine...
 Waiting for machine to be running, this may take a few minutes...
@@ -28,10 +36,14 @@ To see how to connect Docker to this machine, run: docker-machine env couchbase-
 eval $(docker-machine env couchbase-javaee)
 ```
 +
-. Use Docker Compose file from https://github.com/arun-gupta/docker-images/blob/master/wildfly-couchbase-javaee7/docker-compose.yml and start the application environment as:
+. Download the https://github.com/arun-gupta/docker-images/blob/master/wildfly-couchbase-javaee7/docker-compose.yml[Docker Compose file] and start the application environment as:
 +
 ```console
+wget https://raw.githubusercontent.com/arun-gupta/docker-images/master/wildfly-couchbase-javaee7/docker-compose.yml
 docker-compose --x-networking up -d
+```
++
+```
 Creating network "wildflycouchbasejavaee7" with driver "None"
 Pulling mywildfly (arungupta/wildfly-admin:latest)...
 latest: Pulling from arungupta/wildfly-admin
@@ -87,6 +99,9 @@ Creating db
 
 ```console
 mvn install -Pcouchbase -Ddocker.host=$(docker-machine ip couchbase-javaee)
+```
+
+```console
 [INFO] Scanning for projects...
 [INFO]                                                                         
 [INFO] ------------------------------------------------------------------------
@@ -243,6 +258,9 @@ mvn install -Pcouchbase -Ddocker.host=$(docker-machine ip couchbase-javaee)
 
 ```console
 mvn install -Pwildfly -Dwildfly.hostname=$(docker-machine ip couchbase-javaee) -Dwildfly.username=admin -Dwildfly.password=Admin#007
+```
+
+```
 [INFO] Scanning for projects...
 [INFO]                                                                         
 [INFO] ------------------------------------------------------------------------
@@ -330,6 +348,9 @@ INFO: JBoss Remoting version 4.0.9.Final
 
 ```console
 curl -v http://$(docker-machine ip couchbase-javaee):8080/couchbase-javaee/resources/airline
+```
+
+```
 * Hostname was NOT found in DNS cache
 *   Trying 192.168.99.106...
 * Connected to 192.168.99.106 (192.168.99.106) port 8080 (#0)
@@ -355,6 +376,9 @@ curl -v http://$(docker-machine ip couchbase-javaee):8080/couchbase-javaee/resou
 
 ```console
 curl -v http://$(docker-machine ip couchbase-javaee):8080/couchbase-javaee/resources/airline/137
+```
+
+```
 * Hostname was NOT found in DNS cache
 *   Trying 192.168.99.106...
 * Connected to 192.168.99.106 (192.168.99.106) port 8080 (#0)
@@ -379,6 +403,9 @@ curl -v http://$(docker-machine ip couchbase-javaee):8080/couchbase-javaee/resou
 
 ```console
 curl -v -H "Content-Type: application/json" -X POST -d '{"country":"France","iata":"A5","callsign":"AIRLINAIR","name":"Airlinair","icao":"RLA","type":"airline"}' http://$(docker-machine ip couchbase-javaee):8080/couchbase-javaee/resources/airline
+```
+
+```
 * Hostname was NOT found in DNS cache
 *   Trying 192.168.99.106...
 * Connected to 192.168.99.106 (192.168.99.106) port 8080 (#0)
@@ -407,6 +434,9 @@ curl -v -H "Content-Type: application/json" -X POST -d '{"country":"France","iat
 
 ```console
 curl -v -H "Content-Type: application/json" -X PUT -d '{"country":"France","iata":"A5","callsign":"AIRLINAIR","name":"Airlin Air","icao":"RLA","type":"airline","id": "19810"}' http://$(docker-machine ip couchbase-javaee):8080/couchbase-javaee/resources/airline/19810
+```
+
+```
 * Hostname was NOT found in DNS cache
 *   Trying 192.168.99.106...
 * Connected to 192.168.99.106 (192.168.99.106) port 8080 (#0)
@@ -435,6 +465,9 @@ curl -v -H "Content-Type: application/json" -X PUT -d '{"country":"France","iata
 
 ```console
 curl -v -X DELETE http://$(docker-machine ip couchbase-javaee):8080/couchbase-javaee/resources/airline/19810
+```
+
+```
 * Hostname was NOT found in DNS cache
 *   Trying 192.168.99.106...
 * Connected to 192.168.99.106 (192.168.99.106) port 8080 (#0)

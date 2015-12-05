@@ -1,0 +1,13 @@
+mycouchbase:
+  image: couchbase/server
+  ports:
+    - 8091:8091
+    - 8092:8092 
+    - 8093:8093 
+    - 11210:11210
+mypayara:
+  image: payaradocker/payaraserver:4.1.1.154
+  command: /bin/bash -c './asadmin start-domain payaradomain && while kill -0 $(cat ../domains/payaradomain/config/pid); do sleep 0.5; done'
+  ports:
+    - 8080:8080
+    - 4848:4848

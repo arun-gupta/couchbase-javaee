@@ -184,7 +184,6 @@
                                     <containerId>glassfish4x</containerId>
                                     <cargo.remote.username>${payara.username}</cargo.remote.username>
                                     <cargo.remote.password>${payara.password}</cargo.remote.password>
-                                    <cargo.glassfish.domain.name>${payara.domain}</cargo.glassfish.domain.name>
                                     <cargo.glassfish.admin.port>${payara.adminPort}</cargo.glassfish.admin.port>
                                     <cargo.hostname>${payara.hostname}</cargo.hostname>
                                 </configuration>

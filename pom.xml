@@ -19,6 +19,7 @@
         <payara.adminPort>4848</payara.adminPort>
         <payara.username>admin</payara.username>
         <payara.password>glassfish</payara.password>
+        <payara.hostname>localhost</payara.hostname>
     </properties>
 
     <dependencies>
@@ -170,31 +171,22 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.glassfish.maven.plugin</groupId>
-                        <artifactId>maven-glassfish-plugin</artifactId>
-                        <version>2.1</version>
+                        <groupId>org.codehaus.cargo</groupId>
+                        <artifactId>cargo-maven2-plugin</artifactId>
+                        <version>1.4.17</version>
                         <executions>
                             <execution>
                                 <phase>install</phase>
                                 <goals>
-                                    <goal>deploy</goal>
+                                    <goal>redeploy</goal>
                                 </goals>
                                 <configuration>
-                                    <echo>true</echo>
-                                    <user>${payara.username}</user>
-                                    <adminPassword>${payara.password}</adminPassword>
-                                    <glassfishDirectory>${payara.home}</glassfishDirectory>
-                                    <domain>
-                                        <name>${payara.domain}</name>
-                                        <adminPort>${payara.adminPort}</adminPort>
-                                        <host>${payara.hostname}</host>
-                                    </domain>
-                                    <components> 
-                                        <component> 
-                                            <name>${project.artifactId}</name> 
-                                            <artifact>${project.build.directory}/${project.build.finalName}.war</artifact> 
-                                        </component> 
-                                    </components>
+                                    <containerId>glassfish4x</containerId>
+                                    <cargo.remote.username>${payara.username}</cargo.remote.username>
+                                    <cargo.remote.password>${payara.password}</cargo.remote.password>
+                                    <cargo.glassfish.domain.name>${payara.domain}</cargo.glassfish.domain.name>
+                                    <cargo.glassfish.admin.port>${payara.adminPort}</cargo.glassfish.admin.port>
+                                    <cargo.hostname>${payara.hostname}</cargo.hostname>
                                 </configuration>
                             </execution>
                         </executions>

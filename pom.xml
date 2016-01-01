@@ -14,8 +14,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <docker.host>192.168.99.100</docker.host>
         <couchbase.port>8091</couchbase.port>
-        <payara.home>${glassfish.home}</payara.home>
-        <payara.domain>payaradomain</payara.domain>
         <payara.adminPort>4848</payara.adminPort>
         <payara.username>admin</payara.username>
         <payara.password>glassfish</payara.password>

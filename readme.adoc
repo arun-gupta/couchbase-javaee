@@ -1,6 +1,6 @@
 = Couchbase and Java EE
 
-This workspace will show how to query a Couchbase bucket using simple Java EE application deployed on WildFly.
+This workspace will show how to query a Couchbase bucket using simple Java EE application deployed on WildFly. Alternative configuration is also provided to deploy on Payara/GlassFish.
 
 == How to run?
 
@@ -28,7 +28,10 @@ To see how to connect Docker to this machine, run: docker-machine env couchbase-
 eval $(docker-machine env couchbase-javaee)
 ```
 +
-. If using WildFly, use Docker Compose file from https://github.com/arun-gupta/docker-images/blob/master/wildfly-couchbase-javaee7/docker-compose.yml. If using JBoss EAP, use Docker Compose file from https://github.com/arun-gupta/docker-images/blob/master/jboss-eap7-nosql/docker-compose.yml. Start the application environment as:
+. Start the application environment using Docker Compose file
+.. To deploy on WildFly: https://github.com/arun-gupta/docker-images/blob/master/wildfly-couchbase-javaee7/docker-compose.yml
+.. To deploy on JBoss EAP: https://github.com/arun-gupta/docker-images/blob/master/jboss-eap7-nosql/docker-compose.yml.
+.. To deploy on Payara/GlassFish: https://github.com/OndrejM/couchbase-javaee/blob/payara-profile/src/main/docker/images/payara/docker-compose.yml
 +
 ```console
 docker-compose --x-networking up -d
@@ -81,7 +84,6 @@ Digest: sha256:0e983929897ae9bd396533ff7875f30027290c6acf164a66c967ca8884507381
 Status: Downloaded newer image for couchbase/server:latest
 Creating db
 ```
-
 
 === Configure Couchbase server
 
@@ -241,6 +243,8 @@ mvn install -Pcouchbase -Ddocker.host=$(docker-machine ip couchbase-javaee)
 
 === Deploy Application
 
+==== Deploy to WildFly
+
 ```console
 mvn install -Pwildfly -Dwildfly.hostname=$(docker-machine ip couchbase-javaee) -Dwildfly.username=admin -Dwildfly.password=Admin#007
 [INFO] Scanning for projects...
@@ -321,6 +325,11 @@ INFO: JBoss Remoting version 4.0.9.Final
 [INFO] Finished at: 2015-11-29T12:31:37-08:00
 [INFO] Final Memory: 20M/374M
 [INFO] ------------------------------------------------------------------------
+```
+
+==== Deploy to Payara/GlassFish
+```console
+mvn install -Ppayara -Dpayara.hostname=$(docker-machine ip couchbase-javaee) -Dpayara.username=admin -Dpayara.password=glassfish
 ```
 
 === Access Application

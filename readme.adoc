@@ -473,7 +473,7 @@ curl -v -X DELETE http://$(docker-machine ip couchbase-javaee):8080/couchbase-ja
 {"travel-sample":{"id":"19810","iata":"A5","icao":"RLA","name":"Airlin Air","callsign":"AIRLINAIR","type":"airline","country":"France"}}
 ```
 
-==== Harish- Delete an existing Airline resource (DELETE)
+==== Harish Jayakumar Delete an existing Airline resource (DELETE)
 
 ```console
 curl -v -X DELETE http://$(docker-machine ip couchbase-javaee):8080/couchbase-javaee/resources/airline/19810

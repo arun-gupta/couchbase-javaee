@@ -1,3 +1,11 @@
+
+
+
+
+
+
+
+
 = Couchbase and Java EE
 
 This workspace will show how to query a Couchbase bucket using simple Java EE application deployed on WildFly. Alternative configuration is also provided to deploy on Payara/GlassFish.
@@ -464,3 +472,62 @@ curl -v -X DELETE http://$(docker-machine ip couchbase-javaee):8080/couchbase-ja
 * Connection #0 to host 192.168.99.106 left intact
 {"travel-sample":{"id":"19810","iata":"A5","icao":"RLA","name":"Airlin Air","callsign":"AIRLINAIR","type":"airline","country":"France"}}
 ```
+
+==== Delete an existing Airline resource (DELETE)
+
+```console
+curl -v -X DELETE http://$(docker-machine ip couchbase-javaee):8080/couchbase-javaee/resources/airline/19810
+* Hostname was NOT found in DNS cache
+*   Trying 192.168.99.106...
+* Connected to 192.168.99.106 (192.168.99.106) port 8080 (#0)
+> DELETE /couchbase-javaee/resources/airline/19810 HTTP/1.1
+> User-Agent: curl/7.37.1
+> Host: 192.168.99.106:8080
+> Accept: */*
+>
+< HTTP/1.1 200 OK
+< Connection: keep-alive
+< X-Powered-By: Undertow/1
+* Server WildFly/8 is not blacklisted
+< Server: WildFly/8
+< Content-Type: application/octet-stream
+< Content-Length: 136
+< Date: Sun, 29 Nov 2015 20:35:13 GMT
+<
+* Connection #0 to host 192.168.99.106 left intact
+{"travel-sample":{"id":"19810","iata":"A5","icao":"RLA","name":"Airlin Air","callsign":"AIRLINAIR","type":"airline","country":"France"}}
+```
+=== Set up Jenkins Master===
+* Set up an instance with CS engine on it 
+*https://docs.docker.com/docker-trusted-registry/install/install-csengine/
+* After you set up CS engine , pull Jenkins image
+    docker pull jenkins 
+* Run the Jenkins container and expose it on a port ( example : 49001)
+* https://hub.docker.com/_/jenkins/
+   docker run -d -p 49001:8080 -v $PWD/jenkins:/var/lib/jenkins -t zaiste/jenkins
+* Verify by launching a browser with the Jenkins server ip and port 49001
+   http:// <ip-address>:49001
+
+== Set up Jenkins Slave ====
+* Set up an instance with CS engine on it
+*https://docs.docker.com/docker-trusted-registry/install/install-csengine/
+
+==Connect Master and Slave Jenkins Nodes===
+*https://wiki.jenkins-ci.org/display/JENKINS/Step+by+step+guide+to+set+up+master+and+slave+machines
+
+==Install the Github  Plugin===
+* This ensures that the build from git gets pushed to jenkins where you are building the images
+* https://wiki.jenkins-ci.org/display/JENKINS/GitHub+Plugin
+* Very simply go to Manage Plugins  and install the Github and Docker plugins
+
+== Install and configure DTR ==
+*  1)  Install the CS engine on the instance
+*  2)  Install DTR
+     2.1 Log in to the machine where you want to install Trusted Registry.
+           2.2 Verify that CS Engine is installed.
+                  docker —version
+           2.3  docker login
+           2.4  Install DTR :sudo bash -c "$(sudo docker run docker/trusted-registry install)"
+           2.5 Enter the https://<host-ip>/` your browser;s address bar to run the Trusted Registry interface.
+
+

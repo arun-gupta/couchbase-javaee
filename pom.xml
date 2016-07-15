@@ -296,6 +296,32 @@
                                     </arguments>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>Create a new book bucket</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>curl</executable>
+                                    <arguments>
+                                        <argument>-v</argument>
+                                        <argument>-u</argument>
+                                        <argument>Administrator:password</argument>
+                                        <argument>-X</argument>
+                                        <argument>POST</argument>
+                                        <argument>http://${docker.host}:${couchbase.port}/pools/default/buckets</argument>
+                                        <argument>-d</argument>
+                                        <argument>name=books</argument>
+                                        <argument>-d</argument>
+                                        <argument>bucketType=couchbase</argument>
+                                        <argument>-d</argument>
+                                        <argument>ramQuotaMB=200</argument>
+                                        <argument>-d</argument>
+                                        <argument>authType=sasl</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
                 </plugins>

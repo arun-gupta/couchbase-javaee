@@ -2,93 +2,56 @@
 
 This workspace will show how to query a Couchbase bucket using simple Java EE application deployed on WildFly. Alternative configuration is also provided to deploy on Payara/GlassFish.
 
-== How to run?
+== Minimum Requirements
+
+. Docker for Mac
+. Docker 1.12 RC4
+
+== Start Docker Swarm Mode
+
+`docker swarm init`
 
 === Start Application
 
-. Create a new Docker Machine:
-+
 ```console
-docker-machine create -d virtualbox --virtualbox-disk-size "5000" couchbase-javaee
-Running pre-create checks...
-Creating machine...
-Waiting for machine to be running, this may take a few minutes...
-Machine is running, waiting for SSH to be available...
-Detecting operating system of created instance...
-Provisioning created instance...
-Copying certs to the local machine directory...
-Copying certs to the remote machine...
-Setting Docker configuration on the remote daemon...
-To see how to connect Docker to this machine, run: docker-machine env couchbase-javaee
-```
-+
-. Connect to Docker Machine:
-+
-```console
-eval $(docker-machine env couchbase-javaee)
-```
-+
-. Start the application environment using Docker Compose file
-.. To deploy on WildFly: https://github.com/arun-gupta/docker-images/blob/master/wildfly-couchbase-javaee7/docker-compose.yml
-.. To deploy on JBoss EAP: https://github.com/arun-gupta/docker-images/blob/master/jboss-eap7-nosql/docker-compose.yml.
-.. To deploy on Payara/GlassFish: https://github.com/OndrejM/couchbase-javaee/blob/payara-profile/src/main/docker/images/payara/docker-compose.yml
-+
-```console
-docker-compose --x-networking up -d
-Creating network "wildflycouchbasejavaee7" with driver "None"
-Pulling mywildfly (arungupta/wildfly-admin:latest)...
+docker-compose up -d
+Creating network "couchbasejavaee_default" with the default driver
+Pulling web (arungupta/wildfly-admin:latest)...
 latest: Pulling from arungupta/wildfly-admin
-d634beec75db: Pull complete
-11e066facd0e: Pull complete
-032d1eaf4eb3: Pull complete
-817a305e8912: Pull complete
-032da1985e02: Pull complete
-70c838b4cb1f: Pull complete
-b07030da953f: Pull complete
-b8954e98fb7f: Pull complete
-13c7488db70a: Pull complete
-caaf593918ea: Pull complete
-76bb7924107a: Pull complete
-9863ef42276d: Pull complete
-ccdc777044c3: Pull complete
-51f3c097dbb8: Pull complete
-1c69e5bfe110: Pull complete
-25de62cd9f5b: Pull complete
-c0646b15bb61: Pull complete
-7998280ddb06: Pull complete
-921fbccf36b6: Pull complete
-21cb88ee2ede: Pull complete
-4cce2f92cd6e: Pull complete
+a3ed95caeb02: Pull complete
+fa32110542d8: Pull complete
+15db7fa11ba9: Pull complete
+a701e6df8ee7: Pull complete
+6e1e0efdee86: Pull complete
+191bf863124f: Pull complete
+16ade257aae0: Pull complete
+df6d4a72b040: Pull complete
 Digest: sha256:a86d9e3807dd002ef070eea16bb90ae55d966da0a53fdc8ab121dcb505db1a20
 Status: Downloaded newer image for arungupta/wildfly-admin:latest
-Creating wildflycouchbasejavaee7_mywildfly_1
-Pulling mycouchbase (couchbase/server:latest)...
-latest: Pulling from couchbase/server
-c0de77b824d9: Pull complete
-7f183271ade4: Pull complete
-02cc7e934fcc: Pull complete
-fd97fd3cdea7: Pull complete
-c55759c6a761: Pull complete
-2520930519cb: Pull complete
-6597f338e656: Pull complete
-7b49522b71f2: Pull complete
-7789bd549668: Pull complete
-63ff6eb12d29: Pull complete
-1095332e719c: Pull complete
-a64bcb125f74: Pull complete
-13fe802e8814: Pull complete
-d5c923126f19: Pull complete
-39d4343f1a05: Pull complete
-13d820fd06ce: Pull complete
-Digest: sha256:0e983929897ae9bd396533ff7875f30027290c6acf164a66c967ca8884507381
-Status: Downloaded newer image for couchbase/server:latest
-Creating db
+Pulling db (couchbase:latest)...
+latest: Pulling from library/couchbase
+56eb14001ceb: Pull complete
+7ff49c327d83: Pull complete
+6e532f87f96d: Pull complete
+3ce63537e70c: Pull complete
+b8145bb24a3f: Pull complete
+e6e203bac6d0: Pull complete
+566dfc7d9e85: Pull complete
+a2c938a8a28b: Pull complete
+c6f4b64cd81f: Pull complete
+9471cd6d0816: Pull complete
+b5dbff584fd2: Pull complete
+cb803d8435bd: Pull complete
+Digest: sha256:c28ef137a77914333cd65e5cdf187e38507627d83caa06f4748ca0f596e49bea
+Status: Downloaded newer image for couchbase:latest
+Creating couchbasejavaee_db_1
+Creating couchbasejavaee_web_1
 ```
 
 === Configure Couchbase server
 
 ```console
-mvn install -Pcouchbase -Ddocker.host=$(docker-machine ip couchbase-javaee)
+mvn install -Pcouchbase -Ddocker.host=localhost
 [INFO] Scanning for projects...
 [INFO]                                                                         
 [INFO] ------------------------------------------------------------------------
@@ -110,13 +73,14 @@ mvn install -Pcouchbase -Ddocker.host=$(docker-machine ip couchbase-javaee)
 [INFO] Nothing to compile - all classes are up to date
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ couchbase-javaee ---
+[INFO] No tests to run.
 [INFO] 
 [INFO] --- maven-war-plugin:2.1.1:war (default-war) @ couchbase-javaee ---
 [INFO] Packaging webapp
 [INFO] Assembling webapp [couchbase-javaee] in [/Users/arungupta/workspaces/couchbase-javaee/target/couchbase-javaee]
 [INFO] Processing war project
 [INFO] Copying webapp resources [/Users/arungupta/workspaces/couchbase-javaee/src/main/webapp]
-[INFO] Webapp assembled in [49 msecs]
+[INFO] Webapp assembled in [62 msecs]
 [INFO] Building war: /Users/arungupta/workspaces/couchbase-javaee/target/couchbase-javaee.war
 [INFO] 
 [INFO] --- maven-install-plugin:2.4:install (default-install) @ couchbase-javaee ---
@@ -124,120 +88,140 @@ mvn install -Pcouchbase -Ddocker.host=$(docker-machine ip couchbase-javaee)
 [INFO] Installing /Users/arungupta/workspaces/couchbase-javaee/pom.xml to /Users/arungupta/.m2/repository/org/couchbase/sample/couchbase-javaee/1.0-SNAPSHOT/couchbase-javaee-1.0-SNAPSHOT.pom
 [INFO] 
 [INFO] --- exec-maven-plugin:1.4.0:exec (Configure memory) @ couchbase-javaee ---
-* Hostname was NOT found in DNS cache
-*   Trying 192.168.99.106...
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Connected to 192.168.99.106 (192.168.99.106) port 8091 (#0)
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying ::1...
+* Connected to localhost (::1) port 8091 (#0)
 > POST /pools/default HTTP/1.1
-> User-Agent: curl/7.37.1
-> Host: 192.168.99.106:8091
+> Host: localhost:8091
+> User-Agent: curl/7.43.0
 > Accept: */*
 > Content-Length: 36
 > Content-Type: application/x-www-form-urlencoded
 > 
-} [data not shown]
+} [36 bytes data]
 * upload completely sent off: 36 out of 36 bytes
 < HTTP/1.1 200 OK
-* Server Couchbase Server is not blacklisted
 < Server: Couchbase Server
 < Pragma: no-cache
-< Date: Sun, 29 Nov 2015 20:29:41 GMT
+< Date: Sat, 16 Jul 2016 05:31:23 GMT
 < Content-Length: 0
 < Cache-Control: no-cache
 < 
-100    36    0     0  100    36      0  16468 --:--:-- --:--:-- --:--:-- 36000
-* Connection #0 to host 192.168.99.106 left intact
+100    36    0     0  100    36      0   4338 --:--:-- --:--:-- --:--:--  4500
+* Connection #0 to host localhost left intact
 [INFO] 
 [INFO] --- exec-maven-plugin:1.4.0:exec (Configure services) @ couchbase-javaee ---
-* Hostname was NOT found in DNS cache
-*   Trying 192.168.99.106...
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Connected to 192.168.99.106 (192.168.99.106) port 8091 (#0)
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying ::1...
+* Connected to localhost (::1) port 8091 (#0)
 > POST /node/controller/setupServices HTTP/1.1
-> User-Agent: curl/7.37.1
-> Host: 192.168.99.106:8091
+> Host: localhost:8091
+> User-Agent: curl/7.43.0
 > Accept: */*
 > Content-Length: 26
 > Content-Type: application/x-www-form-urlencoded
 > 
-} [data not shown]
+} [26 bytes data]
 * upload completely sent off: 26 out of 26 bytes
 < HTTP/1.1 200 OK
-* Server Couchbase Server is not blacklisted
 < Server: Couchbase Server
 < Pragma: no-cache
-< Date: Sun, 29 Nov 2015 20:29:41 GMT
+< Date: Sat, 16 Jul 2016 05:31:23 GMT
 < Content-Length: 0
 < Cache-Control: no-cache
 < 
-100    26    0     0  100    26      0  19316 --:--:-- --:--:-- --:--:-- 26000
-* Connection #0 to host 192.168.99.106 left intact
+100    26    0     0  100    26      0   3447 --:--:-- --:--:-- --:--:--  3714
+* Connection #0 to host localhost left intact
 [INFO] 
 [INFO] --- exec-maven-plugin:1.4.0:exec (Setup credentials) @ couchbase-javaee ---
-* Hostname was NOT found in DNS cache
-*   Trying 192.168.99.106...
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Connected to 192.168.99.106 (192.168.99.106) port 8091 (#0)
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying ::1...
+* Connected to localhost (::1) port 8091 (#0)
 > POST /settings/web HTTP/1.1
-> User-Agent: curl/7.37.1
-> Host: 192.168.99.106:8091
+> Host: localhost:8091
+> User-Agent: curl/7.43.0
 > Accept: */*
 > Content-Length: 50
 > Content-Type: application/x-www-form-urlencoded
 > 
-} [data not shown]
+} [50 bytes data]
 * upload completely sent off: 50 out of 50 bytes
 < HTTP/1.1 200 OK
-* Server Couchbase Server is not blacklisted
 < Server: Couchbase Server
 < Pragma: no-cache
-< Date: Sun, 29 Nov 2015 20:29:41 GMT
+< Date: Sat, 16 Jul 2016 05:31:24 GMT
 < Content-Type: application/json
-< Content-Length: 44
+< Content-Length: 39
 < Cache-Control: no-cache
 < 
-{ [data not shown]
-100    94  100    44  100    50   5948   6759 --:--:-- --:--:-- --:--:--  7142
-* Connection #0 to host 192.168.99.106 left intact
-{"newBaseUri":"http://192.168.99.106:8091/"}[INFO] 
-[INFO] --- exec-maven-plugin:1.4.0:exec (Install travel-sample bucket) @ couchbase-javaee ---
-* Hostname was NOT found in DNS cache
-*   Trying 192.168.99.106...
+{ [39 bytes data]
+100    89  100    39  100    50   3716   4764 --:--:-- --:--:-- --:--:--  5000
+* Connection #0 to host localhost left intact
+{"newBaseUri":"http://localhost:8091/"}[INFO] 
+[INFO] --- exec-maven-plugin:1.4.0:exec (Set storage mode) @ couchbase-javaee ---
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Connected to 192.168.99.106 (192.168.99.106) port 8091 (#0)
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying ::1...
+* Connected to localhost (::1) port 8091 (#0)
+* Server auth using Basic with user 'Administrator'
+> POST /settings/indexes HTTP/1.1
+> Host: localhost:8091
+> Authorization: Basic QWRtaW5pc3RyYXRvcjpwYXNzd29yZA==
+> User-Agent: curl/7.43.0
+> Accept: */*
+> Content-Length: 28
+> Content-Type: application/x-www-form-urlencoded
+> 
+} [28 bytes data]
+* upload completely sent off: 28 out of 28 bytes
+< HTTP/1.1 200 OK
+< Server: Couchbase Server
+< Pragma: no-cache
+< Date: Sat, 16 Jul 2016 05:31:24 GMT
+< Content-Type: application/json
+< Content-Length: 152
+< Cache-Control: no-cache
+< 
+{ [152 bytes data]
+100   180  100   152  100    28   9831   1811 --:--:-- --:--:-- --:--:-- 10133
+* Connection #0 to host localhost left intact
+{"storageMode":"memory_optimized","indexerThreads":0,"memorySnapshotInterval":200,"stableSnapshotInterval":5000,"maxRollbackPoints":5,"logLevel":"info"}[INFO] 
+[INFO] --- exec-maven-plugin:1.4.0:exec (Install travel-sample bucket) @ couchbase-javaee ---
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying ::1...
+* Connected to localhost (::1) port 8091 (#0)
 * Server auth using Basic with user 'Administrator'
 > POST /sampleBuckets/install HTTP/1.1
+> Host: localhost:8091
 > Authorization: Basic QWRtaW5pc3RyYXRvcjpwYXNzd29yZA==
-> User-Agent: curl/7.37.1
-> Host: 192.168.99.106:8091
+> User-Agent: curl/7.43.0
 > Accept: */*
 > Content-Length: 17
 > Content-Type: application/x-www-form-urlencoded
 > 
-} [data not shown]
+} [17 bytes data]
 * upload completely sent off: 17 out of 17 bytes
 < HTTP/1.1 202 Accepted
-* Server Couchbase Server is not blacklisted
 < Server: Couchbase Server
 < Pragma: no-cache
-< Date: Sun, 29 Nov 2015 20:29:41 GMT
+< Date: Sat, 16 Jul 2016 05:31:24 GMT
 < Content-Type: application/json
 < Content-Length: 2
 < Cache-Control: no-cache
 < 
-{ [data not shown]
-100    19  100     2  100    17     51    437 --:--:-- --:--:-- --:--:--   447
-* Connection #0 to host 192.168.99.106 left intact
+{ [2 bytes data]
+100    19  100     2  100    17     16    140 --:--:-- --:--:-- --:--:--   141
+* Connection #0 to host localhost left intact
 [][INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time: 1.974 s
-[INFO] Finished at: 2015-11-29T12:29:41-08:00
-[INFO] Final Memory: 12M/245M
+[INFO] Total time: 2.048 s
+[INFO] Finished at: 2016-07-15T22:31:24-07:00
+[INFO] Final Memory: 13M/309M
 [INFO] ------------------------------------------------------------------------
 ```
 
@@ -246,7 +230,7 @@ mvn install -Pcouchbase -Ddocker.host=$(docker-machine ip couchbase-javaee)
 ==== Deploy to WildFly
 
 ```console
-mvn install -Pwildfly -Dwildfly.hostname=$(docker-machine ip couchbase-javaee) -Dwildfly.username=admin -Dwildfly.password=Admin#007
+mvn install -Pwildfly -Dwildfly.hostname=localhost -Dwildfly.username=admin -Dwildfly.password=Admin#007
 [INFO] Scanning for projects...
 [INFO]                                                                         
 [INFO] ------------------------------------------------------------------------
@@ -268,13 +252,14 @@ mvn install -Pwildfly -Dwildfly.hostname=$(docker-machine ip couchbase-javaee) -
 [INFO] Nothing to compile - all classes are up to date
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ couchbase-javaee ---
+[INFO] No tests to run.
 [INFO] 
 [INFO] --- maven-war-plugin:2.1.1:war (default-war) @ couchbase-javaee ---
 [INFO] Packaging webapp
 [INFO] Assembling webapp [couchbase-javaee] in [/Users/arungupta/workspaces/couchbase-javaee/target/couchbase-javaee]
 [INFO] Processing war project
 [INFO] Copying webapp resources [/Users/arungupta/workspaces/couchbase-javaee/src/main/webapp]
-[INFO] Webapp assembled in [51 msecs]
+[INFO] Webapp assembled in [62 msecs]
 [INFO] Building war: /Users/arungupta/workspaces/couchbase-javaee/target/couchbase-javaee.war
 [INFO] 
 [INFO] --- maven-install-plugin:2.4:install (default-install) @ couchbase-javaee ---
@@ -298,6 +283,7 @@ mvn install -Pwildfly -Dwildfly.hostname=$(docker-machine ip couchbase-javaee) -
 [INFO] Nothing to compile - all classes are up to date
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ couchbase-javaee ---
+[INFO] No tests to run.
 [INFO] Skipping execution of surefire because it has already been run for this configuration
 [INFO] 
 [INFO] --- maven-war-plugin:2.1.1:war (default-war) @ couchbase-javaee ---
@@ -305,31 +291,31 @@ mvn install -Pwildfly -Dwildfly.hostname=$(docker-machine ip couchbase-javaee) -
 [INFO] Assembling webapp [couchbase-javaee] in [/Users/arungupta/workspaces/couchbase-javaee/target/couchbase-javaee]
 [INFO] Processing war project
 [INFO] Copying webapp resources [/Users/arungupta/workspaces/couchbase-javaee/src/main/webapp]
-[INFO] Webapp assembled in [14 msecs]
+[INFO] Webapp assembled in [18 msecs]
 [INFO] Building war: /Users/arungupta/workspaces/couchbase-javaee/target/couchbase-javaee.war
 [INFO] 
 [INFO] <<< wildfly-maven-plugin:1.1.0.Alpha4:deploy (default) < package @ couchbase-javaee <<<
 [INFO] 
 [INFO] --- wildfly-maven-plugin:1.1.0.Alpha4:deploy (default) @ couchbase-javaee ---
-Nov 29, 2015 12:31:29 PM org.xnio.Xnio <clinit>
+Jul 15, 2016 10:33:23 PM org.xnio.Xnio <clinit>
 INFO: XNIO version 3.3.1.Final
-Nov 29, 2015 12:31:29 PM org.xnio.nio.NioXnio <clinit>
+Jul 15, 2016 10:33:23 PM org.xnio.nio.NioXnio <clinit>
 INFO: XNIO NIO Implementation Version 3.3.1.Final
-Nov 29, 2015 12:31:29 PM org.jboss.remoting3.EndpointImpl <clinit>
+Jul 15, 2016 10:33:23 PM org.jboss.remoting3.EndpointImpl <clinit>
 INFO: JBoss Remoting version 4.0.9.Final
 [INFO] Authenticating against security realm: ManagementRealm
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time: 9.998 s
-[INFO] Finished at: 2015-11-29T12:31:37-08:00
-[INFO] Final Memory: 20M/374M
+[INFO] Total time: 7.478 s
+[INFO] Finished at: 2016-07-15T22:33:28-07:00
+[INFO] Final Memory: 20M/370M
 [INFO] ------------------------------------------------------------------------
 ```
 
 ==== Deploy to Payara/GlassFish
 ```console
-mvn install -Ppayara -Dpayara.hostname=$(docker-machine ip couchbase-javaee) -Dpayara.username=admin -Dpayara.password=glassfish
+mvn install -Ppayara -Dpayara.hostname=localhost -Dpayara.username=admin -Dpayara.password=glassfish
 ```
 
 === Access Application
@@ -338,62 +324,58 @@ mvn install -Ppayara -Dpayara.hostname=$(docker-machine ip couchbase-javaee) -Dp
 
 
 ```console
-curl -v http://$(docker-machine ip couchbase-javaee):8080/couchbase-javaee/resources/airline
-* Hostname was NOT found in DNS cache
-*   Trying 192.168.99.106...
-* Connected to 192.168.99.106 (192.168.99.106) port 8080 (#0)
+curl -v http://localhost:8080/couchbase-javaee/resources/airline
+*   Trying ::1...
+* Connected to localhost (::1) port 8080 (#0)
 > GET /couchbase-javaee/resources/airline HTTP/1.1
-> User-Agent: curl/7.37.1
-> Host: 192.168.99.106:8080
+> Host: localhost:8080
+> User-Agent: curl/7.43.0
 > Accept: */*
 > 
 < HTTP/1.1 200 OK
 < Connection: keep-alive
 < X-Powered-By: Undertow/1
-* Server WildFly/8 is not blacklisted
 < Server: WildFly/8
 < Content-Type: application/octet-stream
-< Content-Length: 1415
-< Date: Sun, 29 Nov 2015 20:32:09 GMT
+< Content-Length: 1402
+< Date: Sat, 16 Jul 2016 05:34:56 GMT
 < 
-* Connection #0 to host 192.168.99.106 left intact
-[{"travel-sample":{"id":10748,"iata":"ZQ","icao":"LOC","name":"Locair","callsign":"LOCAIR","type":"airline","country":"United States"}}, {"travel-sample":{"id":137,"iata":"AF","icao":"AFR","name":"Air France","callsign":"AIRFRANS","type":"airline","country":"France"}}, {"travel-sample":{"id":10226,"iata":"A1","icao":"A1F","name":"Atifly","callsign":"atifly","type":"airline","country":"United States"}}, {"travel-sample":{"id":139,"iata":"SB","icao":"ACI","name":"Air Caledonie International","callsign":"AIRCALIN","type":"airline","country":"France"}}, {"travel-sample":{"id":1355,"iata":"BA","icao":"BAW","name":"British Airways","callsign":"SPEEDBIRD","type":"airline","country":"United Kingdom"}}, {"travel-sample":{"id":112,"iata":"5W","icao":"AEU","name":"Astraeus","callsign":"FLYSTAR","type":"airline","country":"United Kingdom"}}, {"travel-sample":{"id":10,"iata":"Q5","icao":"MLA","name":"40-Mile Air","callsign":"MILE-AIR","type":"airline","country":"United States"}}, {"travel-sample":{"id":1191,"iata":"UU","icao":"REU","name":"Air Austral","callsign":"REUNION","type":"airline","country":"France"}}, {"travel-sample":{"id":109,"iata":"KO","icao":"AER","name":"Alaska Central Express","callsign":"ACE AIR","type":"airline","country":"United States"}}, {"travel-sample":{"id":10765,"iata":"K5","icao":"SQH","name":"SeaPort Airlines","callsign":"SASQUATCH","type":"airline","country":"United States"}}]
+* Connection #0 to host localhost left intact
+[{"travel-sample":{"id":10,"iata":"Q5","icao":"MLA","name":"40-Mile Air","callsign":"MILE-AIR","type":"airline","country":"United States"}}, {"travel-sample":{"id":10123,"iata":"TQ","icao":"TXW","name":"Texas Wings","callsign":"TXW","type":"airline","country":"United States"}}, {"travel-sample":{"id":10226,"iata":"A1","icao":"A1F","name":"Atifly","callsign":"atifly","type":"airline","country":"United States"}}, {"travel-sample":{"id":10642,"iata":null,"icao":"JRB","name":"Jc royal.britannica","callsign":null,"type":"airline","country":"United Kingdom"}}, {"travel-sample":{"id":10748,"iata":"ZQ","icao":"LOC","name":"Locair","callsign":"LOCAIR","type":"airline","country":"United States"}}, {"travel-sample":{"id":10765,"iata":"K5","icao":"SQH","name":"SeaPort Airlines","callsign":"SASQUATCH","type":"airline","country":"United States"}}, {"travel-sample":{"id":109,"iata":"KO","icao":"AER","name":"Alaska Central Express","callsign":"ACE AIR","type":"airline","country":"United States"}}, {"travel-sample":{"id":112,"iata":"5W","icao":"AEU","name":"Astraeus","callsign":"FLYSTAR","type":"airline","country":"United Kingdom"}}, {"travel-sample":{"id":1191,"iata":"UU","icao":"REU","name":"Air Austral","callsign":"REUNION","type":"airline","country":"France"}}, {"travel-sample":{"id":1203,"iata":"A5","icao":"RLA","name":"Airlinair","callsign":"AIRLINAIR","type":"airline","country":"France"}}]
 ```
 
 ==== Get one Airline resource (GET)
 
 ```console
-curl -v http://$(docker-machine ip couchbase-javaee):8080/couchbase-javaee/resources/airline/137
-* Hostname was NOT found in DNS cache
-*   Trying 192.168.99.106...
-* Connected to 192.168.99.106 (192.168.99.106) port 8080 (#0)
+curl -v http://localhost:8080/couchbase-javaee/resources/airline/137
+curl -v http://localhost:8080/couchbase-javaee/resources/airline/137
+*   Trying ::1...
+* Connected to localhost (::1) port 8080 (#0)
 > GET /couchbase-javaee/resources/airline/137 HTTP/1.1
-> User-Agent: curl/7.37.1
-> Host: 192.168.99.106:8080
+> Host: localhost:8080
+> User-Agent: curl/7.43.0
 > Accept: */*
 > 
 < HTTP/1.1 200 OK
 < Connection: keep-alive
 < X-Powered-By: Undertow/1
-* Server WildFly/8 is not blacklisted
 < Server: WildFly/8
 < Content-Type: application/octet-stream
 < Content-Length: 131
-< Date: Sun, 29 Nov 2015 20:32:52 GMT
+< Date: Sat, 16 Jul 2016 05:35:57 GMT
 < 
-* Connection #0 to host 192.168.99.106 left intact
+* Connection #0 to host localhost left intact
 {"travel-sample":{"id":137,"iata":"AF","icao":"AFR","name":"Air France","callsign":"AIRFRANS","type":"airline","country":"France"}}
 ```
 ==== Create a new Airline resource (POST)
 
 ```console
-curl -v -H "Content-Type: application/json" -X POST -d '{"country":"France","iata":"A5","callsign":"AIRLINAIR","name":"Airlinair","icao":"RLA","type":"airline"}' http://$(docker-machine ip couchbase-javaee):8080/couchbase-javaee/resources/airline
-* Hostname was NOT found in DNS cache
-*   Trying 192.168.99.106...
-* Connected to 192.168.99.106 (192.168.99.106) port 8080 (#0)
+curl -v -H "Content-Type: application/json" -X POST -d '{"country":"France","iata":"A5","callsign":"AIRLINAIR","name":"Airlinair","icao":"RLA","type":"airline"}' http://localhost:8080/couchbase-javaee/resources/airline
+*   Trying ::1...
+* Connected to localhost (::1) port 8080 (#0)
 > POST /couchbase-javaee/resources/airline HTTP/1.1
-> User-Agent: curl/7.37.1
-> Host: 192.168.99.106:8080
+> Host: localhost:8080
+> User-Agent: curl/7.43.0
 > Accept: */*
 > Content-Type: application/json
 > Content-Length: 104
@@ -402,26 +384,24 @@ curl -v -H "Content-Type: application/json" -X POST -d '{"country":"France","iat
 < HTTP/1.1 200 OK
 < Connection: keep-alive
 < X-Powered-By: Undertow/1
-* Server WildFly/8 is not blacklisted
 < Server: WildFly/8
 < Content-Type: application/octet-stream
 < Content-Length: 117
-< Date: Sun, 29 Nov 2015 20:33:40 GMT
+< Date: Sat, 16 Jul 2016 05:36:42 GMT
 < 
-* Connection #0 to host 192.168.99.106 left intact
+* Connection #0 to host localhost left intact
 {"id":"19810","iata":"A5","icao":"RLA","name":"Airlinair","callsign":"AIRLINAIR","type":"airline","country":"France"}
 ```
 
 ==== Update an existing Airline resource (PUT)
 
 ```console
-curl -v -H "Content-Type: application/json" -X PUT -d '{"country":"France","iata":"A5","callsign":"AIRLINAIR","name":"Airlin Air","icao":"RLA","type":"airline","id": "19810"}' http://$(docker-machine ip couchbase-javaee):8080/couchbase-javaee/resources/airline/19810
-* Hostname was NOT found in DNS cache
-*   Trying 192.168.99.106...
-* Connected to 192.168.99.106 (192.168.99.106) port 8080 (#0)
+curl -v -H "Content-Type: application/json" -X PUT -d '{"country":"France","iata":"A5","callsign":"AIRLINAIR","name":"Airlin Air","icao":"RLA","type":"airline","id": "19810"}' http://localhost:8080/couchbase-javaee/resources/airline/19810
+*   Trying ::1...
+* Connected to localhost (::1) port 8080 (#0)
 > PUT /couchbase-javaee/resources/airline/19810 HTTP/1.1
-> User-Agent: curl/7.37.1
-> Host: 192.168.99.106:8080
+> Host: localhost:8080
+> User-Agent: curl/7.43.0
 > Accept: */*
 > Content-Type: application/json
 > Content-Length: 119
@@ -430,105 +410,35 @@ curl -v -H "Content-Type: application/json" -X PUT -d '{"country":"France","iata
 < HTTP/1.1 200 OK
 < Connection: keep-alive
 < X-Powered-By: Undertow/1
-* Server WildFly/8 is not blacklisted
 < Server: WildFly/8
 < Content-Type: application/octet-stream
 < Content-Length: 118
-< Date: Sun, 29 Nov 2015 20:34:32 GMT
+< Date: Sat, 16 Jul 2016 05:37:29 GMT
 < 
-* Connection #0 to host 192.168.99.106 left intact
+* Connection #0 to host localhost left intact
 {"id":"19810","iata":"A5","icao":"RLA","name":"Airlin Air","callsign":"AIRLINAIR","type":"airline","country":"France"}
 ```
 
 ==== Delete an existing Airline resource (DELETE)
 
 ```console
-curl -v -X DELETE http://$(docker-machine ip couchbase-javaee):8080/couchbase-javaee/resources/airline/19810
-* Hostname was NOT found in DNS cache
-*   Trying 192.168.99.106...
-* Connected to 192.168.99.106 (192.168.99.106) port 8080 (#0)
+curl -v -X DELETE http://localhost:8080/couchbase-javaee/resources/airline/19810
+*   Trying ::1...
+* Connected to localhost (::1) port 8080 (#0)
 > DELETE /couchbase-javaee/resources/airline/19810 HTTP/1.1
-> User-Agent: curl/7.37.1
-> Host: 192.168.99.106:8080
+> Host: localhost:8080
+> User-Agent: curl/7.43.0
 > Accept: */*
 > 
 < HTTP/1.1 200 OK
 < Connection: keep-alive
 < X-Powered-By: Undertow/1
-* Server WildFly/8 is not blacklisted
 < Server: WildFly/8
 < Content-Type: application/octet-stream
 < Content-Length: 136
-< Date: Sun, 29 Nov 2015 20:35:13 GMT
+< Date: Sat, 16 Jul 2016 05:38:14 GMT
 < 
-* Connection #0 to host 192.168.99.106 left intact
+* Connection #0 to host localhost left intact
 {"travel-sample":{"id":"19810","iata":"A5","icao":"RLA","name":"Airlin Air","callsign":"AIRLINAIR","type":"airline","country":"France"}}
 ```
-
-==== Delete an existing Airline resource (DELETE)
-
-```console
-curl -v -X DELETE http://$(docker-machine ip couchbase-javaee):8080/couchbase-javaee/resources/airline/19810
-* Hostname was NOT found in DNS cache
-*   Trying 192.168.99.106...
-* Connected to 192.168.99.106 (192.168.99.106) port 8080 (#0)
-> DELETE /couchbase-javaee/resources/airline/19810 HTTP/1.1
-> User-Agent: curl/7.37.1
-> Host: 192.168.99.106:8080
-> Accept: */*
->
-< HTTP/1.1 200 OK
-< Connection: keep-alive
-< X-Powered-By: Undertow/1
-* Server WildFly/8 is not blacklisted
-< Server: WildFly/8
-< Content-Type: application/octet-stream
-< Content-Length: 136
-< Date: Sun, 29 Nov 2015 20:35:13 GMT
-<
-* Connection #0 to host 192.168.99.106 left intact
-{"travel-sample":{"id":"19810","iata":"A5","icao":"RLA","name":"Airlin Air","callsign":"AIRLINAIR","type":"airline","country":"France"}}
-```
-== CI/CD with Docker + Jenkins
-
-=== Set up Jenkins Master
-
-. Set up an instance with CS engine on it: https://docs.docker.com/docker-trusted-registry/install/install-csengine/
-. After you set up CS engine , pull Jenkins image
-
-    docker pull jenkins
-
-. Run the Jenkins container and expose it on a port (example : 49001) https://hub.docker.com/_/jenkins/
-
-   docker run -d -p 49001:8080 -v $PWD/jenkins:/var/lib/jenkins -t zaiste/jenkins
-
-. Verify by launching a browser with the Jenkins server ip and port 49001
-
-   http://<ip-address>:49001
-
-== Set up Jenkins Slave (Optional)
-
-. Set up an instance with CS engine on it: https://docs.docker.com/docker-trusted-registry/install/install-csengine/
-
-== Connect Master and Slave Jenkins Nodes (Optional)
-
-https://wiki.jenkins-ci.org/display/JENKINS/Step+by+step+guide+to+set+up+master+and+slave+machines
-
-== Install the Github  Plugin
-. This ensures that the build from git gets pushed to jenkins where you are building the images
-. https://wiki.jenkins-ci.org/display/JENKINS/GitHub+Plugin
-. Very simply go to Manage Plugins  and install the Github and Docker plugins
-
-== Install and configure Docker Trusted Registry (DTR)
-
-. Install the CS engine on the instance
-. Install DTR
-.. Log in to the machine where you want to install Trusted Registry.
-.. Verify that CS Engine is installed
-+
-   docker —version
-+
-.. docker login
-.. Install DTR: `sudo bash -c "$(sudo docker run docker/trusted-registry install)"`
-.. Enter the https://<host-ip>/ in your browser's address bar to run the Trusted Registry interface.
 

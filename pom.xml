@@ -277,7 +277,7 @@
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>Install travel-sample bucket</id>
+                                <id>Set storage mode</id>
                                 <phase>install</phase>
                                 <goals>
                                     <goal>exec</goal>
@@ -290,14 +290,14 @@
                                         <argument>Administrator:password</argument>
                                         <argument>-X</argument>
                                         <argument>POST</argument> 
-                                        <argument>http://${docker.host}:${couchbase.port}/sampleBuckets/install</argument>
+                                        <argument>http://${docker.host}:${couchbase.port}/settings/indexes</argument>
                                         <argument>-d</argument>
-                                        <argument>["travel-sample"]</argument>
+                                        <argument>storageMode=memory_optimized</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>Create a new book bucket</id>
+                                <id>Install travel-sample bucket</id>
                                 <phase>install</phase>
                                 <goals>
                                     <goal>exec</goal>
@@ -310,15 +310,9 @@
                                         <argument>Administrator:password</argument>
                                         <argument>-X</argument>
                                         <argument>POST</argument>
-                                        <argument>http://${docker.host}:${couchbase.port}/pools/default/buckets</argument>
+                                        <argument>http://${docker.host}:${couchbase.port}/sampleBuckets/install</argument>
                                         <argument>-d</argument>
-                                        <argument>name=books</argument>
-                                        <argument>-d</argument>
-                                        <argument>bucketType=couchbase</argument>
-                                        <argument>-d</argument>
-                                        <argument>ramQuotaMB=200</argument>
-                                        <argument>-d</argument>
-                                        <argument>authType=sasl</argument>
+                                        <argument>["travel-sample"]</argument>
                                     </arguments>
                                 </configuration>
                             </execution>

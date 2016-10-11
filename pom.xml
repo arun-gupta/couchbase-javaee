@@ -12,7 +12,6 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <docker.host>192.168.99.100</docker.host>
         <couchbase.port>8091</couchbase.port>
         <payara.adminPort>4848</payara.adminPort>
         <payara.username>admin</payara.username>
@@ -65,14 +64,14 @@
                     <plugin>
                         <groupId>org.jolokia</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
-                        <version>0.13.5</version>
+                        <version>0.13.9</version>
                         <configuration>
                             <images>
                                 <image>
-                                    <alias>javaee-couchbase</alias>
-                                    <name>arungupta/javaee-couchbase</name>
+                                    <alias>${project.artifactId}</alias>
+                                    <name>arungupta/${project.artifactId}</name>
                                     <build>
-                                        <from>jboss/wildfly:9.0.0.Final</from>
+                                        <from>jboss/wildfly</from>
                                         <assembly>
                                             <descriptor>assembly.xml</descriptor>
                                             <basedir>/opt/jboss/wildfly/standalone/deployments/</basedir>
@@ -123,7 +122,7 @@
                     <plugin>
                         <groupId>org.wildfly.plugins</groupId>
                         <artifactId>wildfly-maven-plugin</artifactId>
-                        <version>1.1.0.Alpha4</version>
+                        <version>1.1.0.Alpha11</version>
                         <executions>
                             <execution>
                                 <phase>install</phase>

@@ -1,10 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.couchbase.sample.javaee;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
@@ -13,5 +11,13 @@ import javax.ws.rs.core.Application;
  */
 @ApplicationPath("resources")
 public class MyApplication extends Application {
+
+    final Set<Class<?>> classes = new HashSet<>();
+
+    @Override
+    public Set<Class<?>> getClasses() {
+        classes.add(AirlineResource.class);
+        return Collections.unmodifiableSet(classes);
+    }
 
 }

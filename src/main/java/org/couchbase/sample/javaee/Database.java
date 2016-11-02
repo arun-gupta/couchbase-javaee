@@ -9,6 +9,8 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import java.util.concurrent.TimeUnit;
+import java.lang.Thread;
 
 /**
  * @author Arun Gupta
@@ -47,9 +49,20 @@ public class Database {
     }
     
     public Bucket getBucket() {
-        if (null == bucket) {
-            bucket = getCluster().openBucket("travel-sample");
+        while (null == bucket) {
+    		System.out.println("Trying to connect to the database");
+        	try {
+        		bucket = getCluster().openBucket("travel-sample", 2L, TimeUnit.MINUTES);
+        	} catch (com.couchbase.client.core.ServiceNotAvailableException e) {
+        		System.out.println("Exception: " + e.toString());
+        	}
+        	try {
+        		Thread.sleep(10000);
+        	} catch (Exception e) {
+        		System.out.println("Thread sleep Exception: " + e.toString());        		
+        	}
         }
+        
         return bucket;
     }
 }

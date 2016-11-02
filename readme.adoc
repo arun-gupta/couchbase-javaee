@@ -7,6 +7,23 @@ This workspace will show how to query a Couchbase bucket using simple Java EE ap
 . Docker for Mac
 . Docker 1.12 RC4
 
+== Building the container
+
+If you just want to build the container with the java application. 
+
+Start by compiling the application and create the war file by compiling it in a maven container, using the official maven Docker image.
+
+```
+docker volume create maven
+docker run -it --rm -v $PWD:/usr/src -v maven:/root/.m2 -w /usr/src maven:3.3-jdk-8 mvn package
+```
+
+This will create target/couchbase-javaee.war. Then build the Docker image for the application.
+
+```
+docker build -t arungupta/wildfly-couchbase-javaee7 .
+```
+
 == Start Docker Swarm Mode
 
 `docker swarm init`

@@ -5,6 +5,7 @@ import com.couchbase.client.java.CouchbaseCluster;
 import com.couchbase.client.java.document.JsonLongDocument;
 import com.couchbase.client.java.query.N1qlQuery;
 import com.couchbase.client.java.query.N1qlQueryResult;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
@@ -16,10 +17,10 @@ import javax.ejb.Startup;
 @Singleton
 @Startup
 public class Database {
-    
+
     CouchbaseCluster cluster;
     Bucket bucket;
-    
+
     @PostConstruct
     public void init() {
         if (!getBucket().exists("airline_sequence")) {
@@ -31,7 +32,7 @@ public class Database {
             }
         }
     }
-    
+
     @PreDestroy
     public void stop() {
         bucket.close();
@@ -40,16 +41,43 @@ public class Database {
 
     public CouchbaseCluster getCluster() {
         if (null == cluster) {
-//            cluster = CouchbaseCluster.create("192.168.99.100");
-            cluster = CouchbaseCluster.create(System.getenv("COUCHBASE_URI"));
+            String host = System.getProperty("COUCHBASE_URI");
+            if (host == null) {
+                host = System.getenv("COUCHBASE_URI");
+            }
+            if (host == null) {
+                throw new RuntimeException("Hostname is null");
+            }
+            System.out.println("env: " + host);
+            cluster = CouchbaseCluster.create(host);
         }
         return cluster;
     }
-    
+
     public Bucket getBucket() {
-        if (null == bucket) {
-            bucket = getCluster().openBucket("travel-sample");
+        while (null == bucket) {
+            System.out.println("Trying to connect to the bucket ...");
+            try {
+                bucket = getCluster().openBucket(getBucketName(), 2L, TimeUnit.MINUTES);
+            } catch (Exception ex) {
+                System.out.println("Error connecting to bucket: " + ex.getMessage());
+                try {
+                    System.out.println("Sleeping for 3 seconds ...");
+                    Thread.sleep(3000);
+                } catch (Exception e) {
+                    System.out.println("Thread sleep Exception: " + e.toString());
+                }
+            }
         }
+        System.out.println("Connected to the bucket.");
+        
+//        if (null == bucket) {
+//            bucket = getCluster().openBucket("travel-sample");
+//        }
         return bucket;
+    }
+    
+    public static String getBucketName() {
+        return "travel-sample";
     }
 }

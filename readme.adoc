@@ -9,7 +9,13 @@ This workspace will show how to query a Couchbase bucket using simple Java EE ap
 == Run Application
 
 . Start Docker Swarm Mode: `docker swarm init`
-. Build application: `mvn package`
+. Build application: `mvn package`. It can alternatively be built using Docker:
++
+```
+docker volume create maven
+docker run -it --rm -v $PWD:/usr/src -v maven:/root/.m2 -w /usr/src maven:3.3-jdk-8 mvn package
+```
++
 . Build Docker image: `docker image build -t arungupta/wildfly-couchbase-javaee:travel .`
 . Deploy the application: `docker stack deploy --compose-file=docker-compose.yml couchbase-javaee`
 

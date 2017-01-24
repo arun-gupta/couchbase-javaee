@@ -40,26 +40,32 @@ public class Database {
     }
 
     public CouchbaseCluster getCluster() {
-        if (null == cluster) {
-            String host = System.getProperty("COUCHBASE_URI");
-            if (host == null) {
-                host = System.getenv("COUCHBASE_URI");
-            }
-            if (host == null) {
-                throw new RuntimeException("Hostname is null");
-            }
-            System.out.println("env: " + host);
-            cluster = CouchbaseCluster.create(host);
+        if (null != cluster) {
+            return cluster;
         }
+
+        String host = System.getProperty("COUCHBASE_URI");
+        if (host == null) {
+            host = System.getenv("COUCHBASE_URI");
+        }
+        if (host == null) {
+            throw new RuntimeException("Hostname is null");
+        }
+        System.out.println("env: " + host);
+        cluster = CouchbaseCluster.create(host);
         return cluster;
     }
 
     public Bucket getBucket() {
+        if (null != bucket) {
+            return bucket;
+        }
+
         while (null == bucket) {
             System.out.println("Trying to connect to the database");
             try {
                 bucket = getCluster().openBucket("travel-sample", 2L, TimeUnit.MINUTES);
-            } catch (com.couchbase.client.core.CouchbaseException e) {
+            } catch (Exception e) {
                 System.out.println("travel-sample bucket not ready yet ...");
             }
             try {

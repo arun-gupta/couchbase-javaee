@@ -61,15 +61,17 @@ public class Database {
             System.out.println("Trying to connect to the database");
             try {
                 bucket = getCluster().openBucket("travel-sample", 2L, TimeUnit.MINUTES);
-            } catch (com.couchbase.client.core.ServiceNotAvailableException e) {
-                System.out.println("Exception: " + e.toString());
+            } catch (com.couchbase.client.core.CouchbaseException e) {
+                System.out.println("travel-sample bucket not ready yet ...");
             }
             try {
-                Thread.sleep(10000);
+                System.out.println("Sleeping for 3 secs ...");
+                Thread.sleep(3000);
             } catch (Exception e) {
-                System.out.println("Thread sleep Exception: " + e.toString());
+                System.out.println("Thread sleep Exception: " + e.getMessage());
             }
         }
+        System.out.println("Bucket found!");
         return bucket;
     }
 

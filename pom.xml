@@ -69,7 +69,7 @@
                             <images>
                                 <image>
                                     <alias>${project.artifactId}</alias>
-                                    <name>arungupta/${project.artifactId}</name>
+                                    <name>arungupta/${project.artifactId}:travel</name>
                                     <build>
                                         <from>jboss/wildfly</from>
                                         <assembly>

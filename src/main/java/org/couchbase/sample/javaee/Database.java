@@ -25,7 +25,21 @@ public class Database {
     public void init() {
         if (!getBucket().exists("airline_sequence")) {
             N1qlQuery query = N1qlQuery.simple("SELECT MAX(id) + 1 as counterInit FROM `travel-sample` where type=\"airline\"");
-            N1qlQueryResult result = bucket.query(query);
+            N1qlQueryResult result = null;
+            while (result == null) {
+                System.out.println("Trying to execute first query ...");
+                try {
+                    result = bucket.query(query);
+                } catch (com.couchbase.client.core.ServiceNotAvailableException ex) {
+                    System.out.println("Query service not up...");
+                }
+                try {
+                    System.out.println("Sleeping for 3 secs (waiting for Query service) ...");
+                    Thread.sleep(3000);
+                } catch (Exception e) {
+                    System.out.println("Thread sleep Exception: " + e.getMessage());
+                }
+            }
             if (result.finalSuccess()) {
                 long counterInit = result.allRows().get(0).value().getLong("counterInit");
                 bucket.insert(JsonLongDocument.create("airline_sequence", counterInit));
@@ -69,7 +83,7 @@ public class Database {
                 System.out.println("travel-sample bucket not ready yet ...");
             }
             try {
-                System.out.println("Sleeping for 3 secs ...");
+                System.out.println("Sleeping for 3 secs (waiting for travel-sample bucket ...");
                 Thread.sleep(3000);
             } catch (Exception e) {
                 System.out.println("Thread sleep Exception: " + e.getMessage());

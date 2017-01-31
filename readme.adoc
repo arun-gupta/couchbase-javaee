@@ -20,8 +20,8 @@ docker volume create maven
 docker run -it --rm -v $PWD:/usr/src -v maven:/root/.m2 -w /usr/src maven:3.3-jdk-8 mvn package
 ```
 +
-. Build Docker image: `docker image build -t arungupta/wildfly-couchbase-javaee:travel .`
-. Push Docker image: `docker push arungupta/wildfly-couchbase-javaee:travel`
+. Build Docker image: `mvn package -Pdocker`
+. Push Docker image: `mvn install -Pdocker`
 
 == Deploy Application to Payara/GlassFish
 
@@ -33,14 +33,13 @@ mvn install -Ppayara -Dpayara.hostname=localhost -Dpayara.username=admin -Dpayar
 
 === Get 10 Airline resources (GET)
 
-Invoke:
+Command:
 ```
 curl -v http://localhost:8080/airlines/resources/airline
 ```
 
 Result:
-
-```console
+```
 *   Trying ::1...
 * Connected to localhost (::1) port 8080 (#0)
 > GET /airlines/resources/airline HTTP/1.1
@@ -54,7 +53,7 @@ Result:
 < Server: WildFly/10
 < Content-Type: application/octet-stream
 < Content-Length: 1402
-< Date: Mon, 23 Jan 2017 21:54:01 GMT
+< Date: Tue, 24 Jan 2017 00:36:28 GMT
 < 
 * Connection #0 to host localhost left intact
 [{"travel-sample":{"country":"United States","iata":"Q5","callsign":"MILE-AIR","name":"40-Mile Air","icao":"MLA","id":10,"type":"airline"}}, {"travel-sample":{"country":"United States","iata":"TQ","callsign":"TXW","name":"Texas Wings","icao":"TXW","id":10123,"type":"airline"}}, {"travel-sample":{"country":"United States","iata":"A1","callsign":"atifly","name":"Atifly","icao":"A1F","id":10226,"type":"airline"}}, {"travel-sample":{"country":"United Kingdom","iata":null,"callsign":null,"name":"Jc royal.britannica","icao":"JRB","id":10642,"type":"airline"}}, {"travel-sample":{"country":"United States","iata":"ZQ","callsign":"LOCAIR","name":"Locair","icao":"LOC","id":10748,"type":"airline"}}, {"travel-sample":{"country":"United States","iata":"K5","callsign":"SASQUATCH","name":"SeaPort Airlines","icao":"SQH","id":10765,"type":"airline"}}, {"travel-sample":{"country":"United States","iata":"KO","callsign":"ACE AIR","name":"Alaska Central Express","icao":"AER","id":109,"type":"airline"}}, {"travel-sample":{"country":"United Kingdom","iata":"5W","callsign":"FLYSTAR","name":"Astraeus","icao":"AEU","id":112,"type":"airline"}}, {"travel-sample":{"country":"France","iata":"UU","callsign":"REUNION","name":"Air Austral","icao":"REU","id":1191,"type":"airline"}}, {"travel-sample":{"country":"France","iata":"A5","callsign":"AIRLINAIR","name":"Airlinair","icao":"RLA","id":1203,"type":"airline"}}]
@@ -62,11 +61,12 @@ Result:
 
 === Get one Airline resource (GET)
 
-Invoke:
+Command:
 ```
 curl -v http://localhost:8080/airlines/resources/airline/137
 ```
 
+Result:
 ```
 *   Trying ::1...
 * Connected to localhost (::1) port 8080 (#0)
@@ -81,15 +81,21 @@ curl -v http://localhost:8080/airlines/resources/airline/137
 < Server: WildFly/10
 < Content-Type: application/octet-stream
 < Content-Length: 131
-< Date: Mon, 23 Jan 2017 21:55:05 GMT
+< Date: Tue, 24 Jan 2017 00:37:02 GMT
 < 
 * Connection #0 to host localhost left intact
 {"travel-sample":{"country":"France","iata":"AF","callsign":"AIRFRANS","name":"Air France","icao":"AFR","id":137,"type":"airline"}}
 ```
+
 === Create a new Airline resource (POST)
 
+Command:
+```
+curl -v -H "Content-Type: application/json" -X POST -d '{"country":"France","iata":"A5","callsign":"AIRLINAIR","name":"Airlinair","icao":"RLA","type":"airline"}' http://localhost:8080/airlines/resources/airline
+```
+
+Result:
 ```console
-curl -v -H "Content-Type: application/json" -X POST -d '{"country":"France","iata":"A5","callsign":"AIRLINAIR","name":"Airlinair","icao":"RLA","type":"airline"}' http://localhost:8080/couchbase-javaee/resources/airline
 *   Trying ::1...
 * Connected to localhost (::1) port 8080 (#0)
 > POST /couchbase-javaee/resources/airline HTTP/1.1
@@ -115,7 +121,7 @@ curl -v -H "Content-Type: application/json" -X POST -d '{"country":"France","iat
 === Update an existing Airline resource (PUT)
 
 ```console
-curl -v -H "Content-Type: application/json" -X PUT -d '{"country":"France","iata":"A5","callsign":"AIRLINAIR","name":"Airlin Air","icao":"RLA","type":"airline","id": "19810"}' http://localhost:8080/couchbase-javaee/resources/airline/19810
+curl -v -H "Content-Type: application/json" -X PUT -d '{"country":"France","iata":"A5","callsign":"AIRLINAIR","name":"Airlin Air","icao":"RLA","type":"airline","id": "19810"}' http://localhost:8080/airlines/resources/airline/19810
 *   Trying ::1...
 * Connected to localhost (::1) port 8080 (#0)
 > PUT /couchbase-javaee/resources/airline/19810 HTTP/1.1

@@ -8,7 +8,7 @@
                 <include>${project.groupId}:${project.artifactId}</include>
             </includes>
             <outputDirectory>.</outputDirectory>
-            <outputFileNameMapping>${project.artifactId}.war</outputFileNameMapping>
+            <outputFileNameMapping>${project.name}.war</outputFileNameMapping>
         </dependencySet>
     </dependencySets>
 </assembly>

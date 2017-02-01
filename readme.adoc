@@ -11,6 +11,11 @@ This workspace will show how to query a Couchbase bucket using simple Java EE ap
 . Start Docker Swarm Mode: `docker swarm init`
 . Deploy the application: `docker stack deploy --compose-file=docker-compose.yml webapp`
 . Watch the logs: `docker service logs -f webapp_web`
+. Wait for the logs to show the message:
++
+```
+webapp_web.1.bunl5fgo4opp@moby    | 03:12:40,220 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0025: WildFly Full 10.1.0.Final (WildFly Core 2.2.0.Final) started in 100199ms - Started 443 of 691 services (404 services are lazy, passive or on-demand)
+```
 
 Optionally, you may like to build your own image.
 

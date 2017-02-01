@@ -26,6 +26,7 @@ public class AirlineResource {
         
     @GET
     public String getAll() {
+        System.out.println("GET: all");
         N1qlQuery query = N1qlQuery
                 .simple(select("*")
                 .from(i(database.getBucket().name()))
@@ -41,6 +42,7 @@ public class AirlineResource {
     @GET
     @Path("{id}")
     public String getAirline(@PathParam("id") String id) {
+        System.out.println("GET: " + id);
 //        N1qlQuery query = N1qlQuery
 //                .simple(select("*")
 //                .from(i(database.getBucket().name()))
@@ -62,8 +64,7 @@ public class AirlineResource {
     public String addAirline(AirlineBean airline) throws JsonProcessingException {
         System.out.println("POST: " + airline.toString());
         JsonLongDocument id = database.getBucket().counter("airline_sequence", 1);
-
-        JsonDocument document = database.getBucket().insert(AirlineBean.toJson(airline, id.content().longValue()));
+        JsonDocument document = database.getBucket().insert(AirlineBean.toJson(airline, id.content()));
         return document.content().toString();
     }
 

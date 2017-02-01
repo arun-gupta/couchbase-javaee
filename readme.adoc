@@ -21,7 +21,7 @@ docker volume create maven
 docker run -it --rm -v $PWD:/usr/src -v maven:/root/.m2 -w /usr/src maven:3.3-jdk-8 mvn package
 ```
 +
-. Build & Push Docker image: `mvn package -Pdocker`
+. Build & Push Docker image: `mvn install -Pdocker`
 
 == Deploy Application to Payara/GlassFish
 
@@ -53,7 +53,7 @@ Result:
 < Server: WildFly/10
 < Content-Type: application/octet-stream
 < Content-Length: 1402
-< Date: Tue, 24 Jan 2017 00:36:28 GMT
+< Date: Wed, 01 Feb 2017 03:04:41 GMT
 < 
 * Connection #0 to host localhost left intact
 [{"travel-sample":{"country":"United States","iata":"Q5","callsign":"MILE-AIR","name":"40-Mile Air","icao":"MLA","id":10,"type":"airline"}}, {"travel-sample":{"country":"United States","iata":"TQ","callsign":"TXW","name":"Texas Wings","icao":"TXW","id":10123,"type":"airline"}}, {"travel-sample":{"country":"United States","iata":"A1","callsign":"atifly","name":"Atifly","icao":"A1F","id":10226,"type":"airline"}}, {"travel-sample":{"country":"United Kingdom","iata":null,"callsign":null,"name":"Jc royal.britannica","icao":"JRB","id":10642,"type":"airline"}}, {"travel-sample":{"country":"United States","iata":"ZQ","callsign":"LOCAIR","name":"Locair","icao":"LOC","id":10748,"type":"airline"}}, {"travel-sample":{"country":"United States","iata":"K5","callsign":"SASQUATCH","name":"SeaPort Airlines","icao":"SQH","id":10765,"type":"airline"}}, {"travel-sample":{"country":"United States","iata":"KO","callsign":"ACE AIR","name":"Alaska Central Express","icao":"AER","id":109,"type":"airline"}}, {"travel-sample":{"country":"United Kingdom","iata":"5W","callsign":"FLYSTAR","name":"Astraeus","icao":"AEU","id":112,"type":"airline"}}, {"travel-sample":{"country":"France","iata":"UU","callsign":"REUNION","name":"Air Austral","icao":"REU","id":1191,"type":"airline"}}, {"travel-sample":{"country":"France","iata":"A5","callsign":"AIRLINAIR","name":"Airlinair","icao":"RLA","id":1203,"type":"airline"}}]
@@ -81,7 +81,7 @@ Result:
 < Server: WildFly/10
 < Content-Type: application/octet-stream
 < Content-Length: 131
-< Date: Tue, 24 Jan 2017 00:37:02 GMT
+< Date: Wed, 01 Feb 2017 03:05:02 GMT
 < 
 * Connection #0 to host localhost left intact
 {"travel-sample":{"country":"France","iata":"AF","callsign":"AIRFRANS","name":"Air France","icao":"AFR","id":137,"type":"airline"}}
@@ -95,10 +95,10 @@ curl -v -H "Content-Type: application/json" -X POST -d '{"country":"France","iat
 ```
 
 Result:
-```console
+```
 *   Trying ::1...
 * Connected to localhost (::1) port 8080 (#0)
-> POST /couchbase-javaee/resources/airline HTTP/1.1
+> POST /airlines/resources/airline HTTP/1.1
 > Host: localhost:8080
 > User-Agent: curl/7.43.0
 > Accept: */*
@@ -109,22 +109,27 @@ Result:
 < HTTP/1.1 200 OK
 < Connection: keep-alive
 < X-Powered-By: Undertow/1
-< Server: WildFly/8
+< Server: WildFly/10
 < Content-Type: application/octet-stream
 < Content-Length: 117
-< Date: Sat, 16 Jul 2016 05:36:42 GMT
+< Date: Wed, 01 Feb 2017 03:05:18 GMT
 < 
 * Connection #0 to host localhost left intact
-{"id":"19810","iata":"A5","icao":"RLA","name":"Airlinair","callsign":"AIRLINAIR","type":"airline","country":"France"}
+{"country":"France","iata":"A5","callsign":"AIRLINAIR","name":"Airlinair","icao":"RLA","id":"19810","type":"airline"}
 ```
 
 === Update an existing Airline resource (PUT)
 
-```console
+Command:
+```
 curl -v -H "Content-Type: application/json" -X PUT -d '{"country":"France","iata":"A5","callsign":"AIRLINAIR","name":"Airlin Air","icao":"RLA","type":"airline","id": "19810"}' http://localhost:8080/airlines/resources/airline/19810
+```
+
+Result:
+```
 *   Trying ::1...
 * Connected to localhost (::1) port 8080 (#0)
-> PUT /couchbase-javaee/resources/airline/19810 HTTP/1.1
+> PUT /airlines/resources/airline/19810 HTTP/1.1
 > Host: localhost:8080
 > User-Agent: curl/7.43.0
 > Accept: */*
@@ -135,22 +140,27 @@ curl -v -H "Content-Type: application/json" -X PUT -d '{"country":"France","iata
 < HTTP/1.1 200 OK
 < Connection: keep-alive
 < X-Powered-By: Undertow/1
-< Server: WildFly/8
+< Server: WildFly/10
 < Content-Type: application/octet-stream
 < Content-Length: 118
-< Date: Sat, 16 Jul 2016 05:37:29 GMT
+< Date: Wed, 01 Feb 2017 03:05:41 GMT
 < 
 * Connection #0 to host localhost left intact
-{"id":"19810","iata":"A5","icao":"RLA","name":"Airlin Air","callsign":"AIRLINAIR","type":"airline","country":"France"}
+{"country":"France","iata":"A5","callsign":"AIRLINAIR","name":"Airlin Air","icao":"RLA","id":"19810","type":"airline"}
 ```
 
 === Delete an existing Airline resource (DELETE)
 
-```console
-curl -v -X DELETE http://localhost:8080/couchbase-javaee/resources/airline/19810
+Command:
+```
+curl -v -X DELETE http://localhost:8080/airlines/resources/airline/19810
+```
+
+Result:
+```
 *   Trying ::1...
 * Connected to localhost (::1) port 8080 (#0)
-> DELETE /couchbase-javaee/resources/airline/19810 HTTP/1.1
+> DELETE /airlines/resources/airline/19810 HTTP/1.1
 > Host: localhost:8080
 > User-Agent: curl/7.43.0
 > Accept: */*
@@ -158,12 +168,11 @@ curl -v -X DELETE http://localhost:8080/couchbase-javaee/resources/airline/19810
 < HTTP/1.1 200 OK
 < Connection: keep-alive
 < X-Powered-By: Undertow/1
-< Server: WildFly/8
+< Server: WildFly/10
 < Content-Type: application/octet-stream
 < Content-Length: 136
-< Date: Sat, 16 Jul 2016 05:38:14 GMT
+< Date: Wed, 01 Feb 2017 03:05:57 GMT
 < 
 * Connection #0 to host localhost left intact
-{"travel-sample":{"id":"19810","iata":"A5","icao":"RLA","name":"Airlin Air","callsign":"AIRLINAIR","type":"airline","country":"France"}}
+{"travel-sample":{"country":"France","iata":"A5","callsign":"AIRLINAIR","name":"Airlin Air","icao":"RLA","id":"19810","type":"airline"}}
 ```
-

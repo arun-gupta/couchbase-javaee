@@ -46,17 +46,22 @@ public class Database {
                 System.out.println("Thread sleep Exception: " + e.getMessage());
             }
         }
+        System.out.println(count + " number of JSON documents in bucket.");
 
         query = N1qlQuery.simple("SELECT MAX(id) + 1 as counterInit FROM `travel-sample` where type=\"airline\"");
         result = getBucket().query(query);
-        if (result.finalSuccess()) {
-            long counterInit = result.allRows().get(0).value().getLong("counterInit");
-            bucket.insert(JsonLongDocument.create("airline_sequence", counterInit));
-        } else {
-            String message = "Initial query results are not successful, airline_sequence not set";
-            System.out.println(message);
-            throw new RuntimeException(message);
+        while (!result.finalSuccess()) {
+            try {
+                System.out.println("Sleeping for 3 secs (waiting for indexes) ...");
+                Thread.sleep(3000);
+            } catch (Exception e) {
+                System.out.println("Thread sleep Exception: " + e.getMessage());
+            }
+            result = getBucket().query(query);
         }
+
+        long counterInit = result.allRows().get(0).value().getLong("counterInit");
+        bucket.insert(JsonLongDocument.create("airline_sequence", counterInit));
     }
 
     @PreDestroy

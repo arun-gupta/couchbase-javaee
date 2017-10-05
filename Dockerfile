@@ -1,3 +1,3 @@
 FROM jboss/wildfly:latest
 
-COPY target/couchbase-javaee.war /opt/jboss/wildfly/standalone/deployments/airlines.war
+COPY target/airlines.war /opt/jboss/wildfly/standalone/deployments/airlines.war
